@@ -1,0 +1,83 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --card-border: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --ocean-cyan: #0284c7;
+    --ocean-deep: #0369a1;
+  }
+
+  .dark {
+    --bg-main: #0b0f19;
+    --card-bg: #111827;
+    --card-border: #1f2937;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --ocean-cyan: #06b6d4;
+    --ocean-deep: #0284c7;
+  }
+
+  body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .font-jp {
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.45);
+}
+
+@keyframes wave-pulse {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+
+@keyframes blowhole-mist {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.6);
+  }
+  40% {
+    opacity: 0.9;
+    transform: translateY(-16px) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-28px) scale(1.3);
+  }
+}
+
+.animate-wave {
+  animation: wave-pulse 3.5s ease-in-out infinite;
+}
+
+.animate-mist {
+  animation: blowhole-mist 2.2s ease-out infinite;
+}
