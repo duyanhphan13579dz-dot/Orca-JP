@@ -109,6 +109,14 @@ export interface SRSCard {
   dueDate: number; // timestamp in ms
   lastReview?: number;
   status: 'new' | 'learning' | 'mastered';
+  lapses?: number; // số lần quên
+  isLeech?: boolean; // đánh dấu thẻ khó nếu lapses >= 4
+  pitchAccent?: {
+    pattern: 'heiban' | 'atamadaka' | 'nakadaka' | 'odaka';
+    patternName: string;
+    pitchNumber: number;
+    morae: number[]; // 0: low, 1: high
+  };
 }
 
 export interface UserStats {

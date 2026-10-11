@@ -82,7 +82,7 @@ export function App() {
   }, [currentLevel, syncStatus.status]);
 
   // IndexedDB SRS hook
-  const { cards, stats, reloadData, reviewCard, getDueCards, seedDefaultCards } = useSRSIndexedDB();
+  const { cards, stats, reloadData, reviewCard, undoLastReview, canUndo, getDueCards, seedDefaultCards } = useSRSIndexedDB();
 
   // Dark mode class sync
   useEffect(() => {
@@ -432,6 +432,8 @@ export function App() {
               onReviewCard={async (id, grade) => {
                 await reviewCard(id, grade);
               }}
+              canUndo={canUndo}
+              onUndo={undoLastReview}
               currentLevelFilter={currentLevel}
             />
           </div>

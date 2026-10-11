@@ -70,8 +70,8 @@ export const KanjiCard: React.FC<KanjiCardProps> = ({ kanji, className = '' }) =
       {/* Virtual Canvas Drawer if open */}
       {showCanvas && (
         <div className="my-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-cyan-500/30 animate-fade-in flex flex-col items-center">
-          <span className="text-xs font-bold text-slate-500 mb-2">Bảng luyện viết nét ảo: {kanji.kanji}</span>
-          <VirtualCanvas guideChar={kanji.kanji} />
+          <span className="text-xs font-bold text-slate-500 mb-2">Bảng luyện viết nét ảo: {kanji.kanji} ({kanji.strokes} nét)</span>
+          <VirtualCanvas guideChar={kanji.kanji} strokesCount={kanji.strokes} />
         </div>
       )}
 
