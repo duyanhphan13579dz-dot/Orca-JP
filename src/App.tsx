@@ -18,6 +18,7 @@ import { KanaSpeedGame } from './components/kana/KanaSpeedGame';
 // Module 2: Kanji
 import { KanjiCard } from './components/kanji/KanjiCard';
 import { JukugoExplorer } from './components/kanji/JukugoExplorer';
+import { PhoneticRulesModal } from './components/kanji/PhoneticRulesModal';
 import { N5_KANJI } from './data/n5/kanji';
 import { N4_KANJI } from './data/n4/kanji';
 import { N3_KANJI } from './data/n3/kanji';
@@ -55,6 +56,7 @@ export function App() {
     return true;
   });
   const [isBackupOpen, setIsBackupOpen] = useState(false);
+  const [isPhoneticRulesOpen, setIsPhoneticRulesOpen] = useState(false);
   const [kanjiSearch, setKanjiSearch] = useState('');
   const [kanjiSubView, setKanjiSubView] = useState<'cards' | 'quiz'>('cards');
   const [grammarSubView, setGrammarSubView] = useState<'all' | 'nuance' | 'verbs' | 'sov'>('all');
@@ -252,6 +254,13 @@ export function App() {
                 >
                   Đố vui Từ ghép Jukugo
                 </button>
+                <button
+                  onClick={() => setIsPhoneticRulesOpen(true)}
+                  className="px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 hover:from-cyan-500/20 hover:to-indigo-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  40+ Quy tắc Chuyển âm
+                </button>
               </div>
 
               {kanjiSubView === 'cards' && (
@@ -317,7 +326,7 @@ export function App() {
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
-                Bảng Chia 8 Thể Động từ (N4)
+                Ma Trận 10 Thể Động Từ (N5 - N3)
               </button>
 
               {currentLevel === 'N5' && (
@@ -459,6 +468,12 @@ export function App() {
         isOpen={isBackupOpen}
         onClose={() => setIsBackupOpen(false)}
         onDataChanged={reloadData}
+      />
+
+      {/* 40+ Phonetic Rules Modal */}
+      <PhoneticRulesModal
+        isOpen={isPhoneticRulesOpen}
+        onClose={() => setIsPhoneticRulesOpen(false)}
       />
     </div>
   );

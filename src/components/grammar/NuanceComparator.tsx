@@ -1,132 +1,279 @@
-import React, { useState } from 'react';
-import { GrammarItem } from '../../types';
-import { Scale, Zap, Check, Sparkles, BrainCircuit } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { GrammarItem, JLPTLevel } from '../../types';
+import { NUANCE_PAIRS, NuanceDuel } from '../../data/nuancePairs';
+import { AudioButton } from '../common/AudioButton';
+import { LevelBadge } from '../common/LevelBadge';
+import { Scale, Zap, Check, Sparkles, BrainCircuit, AlertTriangle, Search } from 'lucide-react';
 
 interface NuanceComparatorProps {
-  grammarList: GrammarItem[];
+  grammarList?: GrammarItem[];
 }
 
-export const NuanceComparator: React.FC<NuanceComparatorProps> = ({ grammarList }) => {
-  const comparableItems = grammarList.filter(g => g.nuanceVs);
+export const NuanceComparator: React.FC<NuanceComparatorProps> = ({ grammarList = [] }) => {
+  const [selectedLevel, setSelectedLevel] = useState<'all' | JLPTLevel>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  if (comparableItems.length === 0) {
-    return <div className="text-center p-6 text-slate-400">Đang cập nhật các mẫu so sánh sắc thái...</div>;
-  }
+  // Combine static NUANCE_PAIRS with any items from grammarList having nuanceVs
+  const allPairs: NuanceDuel[] = useMemo(() => {
+    const list: NuanceDuel[] = [...NUANCE_PAIRS];
 
-  const currentItem = comparableItems[selectedIndex % comparableItems.length];
-  const nuance = currentItem.nuanceVs!;
+    // Merge any from grammarList not already present
+    for (const g of grammarList) {
+      if (g.nuanceVs && !list.some((p) => p.patternA.includes(g.title) || p.title.includes(g.title))) {
+        list.push({
+          id: `custom-${g.id}`,
+          level: g.level,
+          patternA: g.title,
+          patternB: g.nuanceVs.rivalTitle,
+          title: `${g.title} vs ${g.nuanceVs.rivalTitle}`,
+          coreDifference: g.nuanceVs.difference,
+          whenToUseA: g.nuanceVs.whenToUseA,
+          whenToUseB: g.nuanceVs.whenToUseB,
+          mnemonicTrick: g.nuanceVs.trick,
+          exampleA: {
+            jp: g.examples[0]?.jp || g.title,
+            vi: g.examples[0]?.vi || '',
+          },
+          exampleB: {
+            jp: g.examples[1]?.jp || g.nuanceVs.rivalTitle,
+            vi: g.examples[1]?.vi || '',
+          },
+          commonTrap: 'Lưu ý sự khác biệt ngữ cảnh và điều kiện đi kèm của hai mẫu câu.',
+        });
+      }
+    }
+    return list;
+  }, [grammarList]);
+
+  const filteredPairs = useMemo(() => {
+    return allPairs.filter((p) => {
+      const matchLvl = selectedLevel === 'all' || p.level === selectedLevel;
+      if (!matchLvl) return false;
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      return (
+        p.title.toLowerCase().includes(q) ||
+        p.patternA.toLowerCase().includes(q) ||
+        p.patternB.toLowerCase().includes(q) ||
+        p.coreDifference.toLowerCase().includes(q) ||
+        p.mnemonicTrick.toLowerCase().includes(q)
+      );
+    });
+  }, [allPairs, selectedLevel, searchQuery]);
+
+  const currentPair: NuanceDuel | undefined = filteredPairs[selectedIndex % (filteredPairs.length || 1)];
 
   return (
-    <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl max-w-4xl mx-auto">
+    <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xl max-w-4xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/20">
-            <Scale className="w-5 h-5" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-cyan-500/20">
+            <Scale className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
-              Bộ so sánh Sắc thái Ngữ pháp
+            <div className="flex items-center gap-2">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                Bộ So Sánh Sắc Thái Ngữ Pháp Thực Chiến
+              </h3>
               <span className="px-2 py-0.5 text-[10px] bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 rounded-full font-bold">
                 Độc quyền Orca
               </span>
-            </h3>
+            </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Phân biệt những cấu trúc dễ gây nhầm lẫn nhất trong đề thi JLPT
+              Phân tích sự khác biệt tâm lý và bẫy đề thi JLPT của những cặp ngữ pháp dễ gây nhầm lẫn nhất
             </p>
           </div>
         </div>
 
-        {/* Pair Switcher */}
-        <select
-          value={selectedIndex}
-          onChange={e => setSelectedIndex(Number(e.target.value))}
-          className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-        >
-          {comparableItems.map((item, idx) => (
-            <option key={item.id} value={idx}>
-              {item.title} VS {item.nuanceVs?.rivalTitle}
-            </option>
+        {/* Level filter */}
+        <div className="flex items-center gap-1.5">
+          {(['all', 'N5', 'N4', 'N3'] as const).map((lvl) => (
+            <button
+              key={lvl}
+              onClick={() => {
+                setSelectedLevel(lvl);
+                setSelectedIndex(0);
+              }}
+              className={`px-3 py-1 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                selectedLevel === lvl
+                  ? 'bg-cyan-500 text-white shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+              }`}
+            >
+              {lvl === 'all' ? 'Tất cả' : lvl}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
-      {/* Main Duel Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {/* Left Side: Pattern A */}
-        <div className="p-5 rounded-2xl bg-cyan-50/50 dark:bg-slate-800/40 border-2 border-cyan-500/40 shadow-sm relative">
-          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-cyan-500 text-white text-[10px] font-bold">
-            Mẫu A
-          </div>
-          <h4 className="font-jp text-base font-black text-cyan-700 dark:text-cyan-300 mb-1">
-            {currentItem.title}
-          </h4>
-          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-3">
-            Ý nghĩa cốt lõi: {currentItem.meaningVi}
-          </p>
+      {/* Search & Selector row */}
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div className="relative w-full sm:w-64">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            placeholder="Tìm cặp ngữ pháp..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setSelectedIndex(0);
+            }}
+            className="w-full pl-9 pr-3 py-1.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          />
+        </div>
 
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-cyan-500/20 text-xs space-y-2">
-            <div className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-cyan-500" />
-              Khi nào sử dụng:
+        {filteredPairs.length > 0 && (
+          <select
+            value={selectedIndex}
+            onChange={(e) => setSelectedIndex(Number(e.target.value))}
+            className="w-full sm:w-auto bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          >
+            {filteredPairs.map((p, idx) => (
+              <option key={p.id} value={idx}>
+                [{p.level}] {p.title}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
+      {!currentPair ? (
+        <div className="text-center py-12 text-slate-400 text-sm">
+          Không tìm thấy cặp so sánh nào phù hợp với bộ lọc.
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {/* Pair Title & Core Difference Highlight */}
+          <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2">
+                <LevelBadge level={currentPair.level} size="sm" />
+                <h4 className="text-base font-black text-cyan-900 dark:text-cyan-200">
+                  {currentPair.title}
+                </h4>
+              </div>
+              <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">
+                Điểm Khác Biệt Cốt Lõi
+              </span>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-              {nuance.whenToUseA}
+            <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+              {currentPair.coreDifference}
             </p>
           </div>
-        </div>
 
-        {/* Right Side: Pattern B */}
-        <div className="p-5 rounded-2xl bg-indigo-50/50 dark:bg-slate-800/40 border-2 border-indigo-500/40 shadow-sm relative">
-          <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-indigo-500 text-white text-[10px] font-bold">
-            Mẫu B (Đối trọng)
-          </div>
-          <h4 className="font-jp text-base font-black text-indigo-700 dark:text-indigo-300 mb-1">
-            {nuance.rivalTitle}
-          </h4>
-          <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-3">
-            Sắc thái đối ứng trong giao tiếp
-          </p>
+          {/* Main Duel Cards: A vs B */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Pattern A Card */}
+            <div className="p-5 rounded-2xl bg-blue-50/50 dark:bg-slate-800/50 border-2 border-blue-500/30 shadow-xs relative space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-500 text-white text-[10px] font-black uppercase">
+                  Mẫu A
+                </span>
+                <span className="text-base font-black text-blue-600 dark:text-blue-400 font-jp">
+                  {currentPair.patternA}
+                </span>
+              </div>
 
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-indigo-500/20 text-xs space-y-2">
-            <div className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-indigo-500" />
-              Khi nào sử dụng:
+              <div>
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
+                  Khi nào sử dụng:
+                </span>
+                <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                  {currentPair.whenToUseA}
+                </p>
+              </div>
+
+              {/* Example A */}
+              <div className="pt-2 border-t border-blue-200/50 dark:border-slate-700/60">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                  Ví dụ thực tế:
+                </span>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-jp text-xs font-bold text-slate-900 dark:text-white">
+                      {currentPair.exampleA.jp}
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      {currentPair.exampleA.vi}
+                    </div>
+                  </div>
+                  <AudioButton text={currentPair.exampleA.jp} level={currentPair.level} size="sm" />
+                </div>
+              </div>
             </div>
-            <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
-              {nuance.whenToUseB}
-            </p>
+
+            {/* Pattern B Card */}
+            <div className="p-5 rounded-2xl bg-purple-50/50 dark:bg-slate-800/50 border-2 border-purple-500/30 shadow-xs relative space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-0.5 rounded-full bg-purple-500 text-white text-[10px] font-black uppercase">
+                  Mẫu B
+                </span>
+                <span className="text-base font-black text-purple-600 dark:text-purple-400 font-jp">
+                  {currentPair.patternB}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
+                  Khi nào sử dụng:
+                </span>
+                <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed">
+                  {currentPair.whenToUseB}
+                </p>
+              </div>
+
+              {/* Example B */}
+              <div className="pt-2 border-t border-purple-200/50 dark:border-slate-700/60">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">
+                  Ví dụ thực tế:
+                </span>
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-jp text-xs font-bold text-slate-900 dark:text-white">
+                      {currentPair.exampleB.jp}
+                    </div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                      {currentPair.exampleB.vi}
+                    </div>
+                  </div>
+                  <AudioButton text={currentPair.exampleB.jp} level={currentPair.level} size="sm" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Mnemonic Trick & Trap Alert */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Mnemonic Trick */}
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+              <BrainCircuit className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="text-xs font-black text-amber-700 dark:text-amber-300 block mb-1">
+                  Mẹo Nhớ Siêu Tốc (Mnemonic):
+                </span>
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {currentPair.mnemonicTrick}
+                </p>
+              </div>
+            </div>
+
+            {/* Trap Warning */}
+            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-rose-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="text-xs font-black text-rose-700 dark:text-rose-300 block mb-1">
+                  Cảnh Báo Bẫy Đề Thi JLPT:
+                </span>
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {currentPair.commonTrap}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Difference In Psychology */}
-      <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 mb-4">
-        <div className="flex items-center gap-2 mb-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-          <BrainCircuit className="w-4 h-4 text-cyan-500" />
-          <span>Bản chất Tâm lý người nói (Speaker Psychology):</span>
-        </div>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-          {nuance.difference}
-        </p>
-      </div>
-
-      {/* Golden Trick / JLPT exam tip */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border border-amber-500/30 flex items-start gap-3">
-        <div className="p-2 rounded-xl bg-amber-500 text-white flex-shrink-0 mt-0.5 shadow-sm">
-          <Zap className="w-4 h-4" />
-        </div>
-        <div>
-          <div className="font-bold text-amber-900 dark:text-amber-300 text-xs sm:text-sm flex items-center gap-1 mb-0.5">
-            <Sparkles className="w-3.5 h-3.5" />
-            Mẹo vàng phản xạ phòng thi JLPT
-          </div>
-          <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-            {nuance.trick}
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

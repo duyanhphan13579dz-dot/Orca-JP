@@ -13,6 +13,8 @@ import { N3_KANJI } from '../src/data/n3/kanji';
 import { N3_GRAMMAR } from '../src/data/n3/grammar';
 import { N3_VOCAB_SRS } from '../src/data/n3/vocab';
 import { DOKKAI_READINGS } from '../src/data/n3/readings';
+import { PHONETIC_RULES } from '../src/data/phoneticRules';
+import { NUANCE_PAIRS } from '../src/data/nuancePairs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,6 +38,8 @@ const chunks: Record<string, unknown> = {
   'n3_grammar.json': N3_GRAMMAR,
   'n3_vocab.json': N3_VOCAB_SRS,
   'n3_readings.json': DOKKAI_READINGS,
+  'phonetic_rules.json': PHONETIC_RULES,
+  'nuance_pairs.json': NUANCE_PAIRS,
 };
 
 const manifest: Record<string, { count: number; size: number }> = {};
@@ -52,10 +56,11 @@ for (const [filename, data] of Object.entries(chunks)) {
 }
 
 const manifestPayload = {
-  version: '1.1.0',
+  version: '2.0.0',
   generatedAt: new Date().toISOString(),
   chunks: manifest,
 };
 
 fs.writeFileSync(path.join(outDir, 'manifest.json'), JSON.stringify(manifestPayload, null, 2), 'utf-8');
 console.log('Successfully generated public/data manifest.json');
+

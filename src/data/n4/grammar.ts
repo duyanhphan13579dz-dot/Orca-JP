@@ -98,4 +98,57 @@ export const N4_GRAMMAR: GrammarItem[] = [
       { jp: '召し上がってください。', furigana: 'めしあがってください。', vi: 'Xin mời quý khách dùng bữa ạ (Đặc biệt: 食べる -> 召し上がる).' },
     ],
   },
+  {
+    id: 'n4-g6-tari-tari',
+    title: 'V1-たり V2-たりする (Liệt kê hành động tiêu biểu)',
+    level: 'N4',
+    category: 'Liệt kê hành vi',
+    formation: 'V1-た + り + V2-た + り + します / しました',
+    meaningVi: 'Lúc thì làm V1, lúc thì làm V2...',
+    explanationVi: 'Dùng để liệt kê một vài hành động tiêu biểu trong số nhiều hành động khác nhau, không bắt buộc theo thứ tự thời gian.',
+    examples: [
+      { jp: '休みの日は本を読んだり、音楽を聞いたりします。', furigana: 'やすみのひはほんをよんだり、おんがくをきいたりします。', vi: 'Vào ngày nghỉ, tôi lúc thì đọc sách, lúc thì nghe nhạc.' },
+      { jp: '泣いたり笑ったりしました。', furigana: 'ないたりわらったりしました。', vi: 'Lúc thì khóc lúc thì cười.' },
+    ],
+  },
+  {
+    id: 'n4-g7-sugiru',
+    title: 'V / A + すぎる (Quá mức, thái quá)',
+    level: 'N4',
+    category: 'Mức độ',
+    formation: 'V-bỏ ます + すぎる | A-i (bỏ い) + すぎる | A-na (bỏ な) + すぎる',
+    meaningVi: 'Quá mức, làm gì đó vượt quá giới hạn bình thường',
+    explanationVi: 'Mang sắc thái tiêu cực hoặc ngoài tầm kiểm soát (ăn quá nhiều, uống quá chén, cay quá mức).',
+    examples: [
+      { jp: '昨日、お酒を飲みすぎました。', furigana: 'きのう、おさけをのみすぎました。', vi: 'Hôm qua tôi đã uống quá nhiều rượu.' },
+      { jp: 'この問題は難しすぎます。', furigana: 'このもんだいはむずかしすぎます。', vi: 'Bài toán này quá khó đối với tôi.' },
+    ],
+  },
+  {
+    id: 'n4-g8-yasui-nikui',
+    title: 'V-やすい / V-にくい (Dễ làm / Khó làm)',
+    level: 'N4',
+    category: 'Tính chất & Khả năng',
+    formation: 'V-bỏ ます + やすい / にくい',
+    meaningVi: 'Dễ làm V / Khó làm V...',
+    explanationVi: 'Được chia như một tính từ đuôi -i (やすかった, にくくない). Diễn tả tính chất của đồ vật khiến hành động dễ hoặc khó thực hiện.',
+    examples: [
+      { jp: 'この薬は甘くて、飲みやすいです。', furigana: 'このくすりはあまくて、のみやすいです。', vi: 'Thuốc này ngọt nên rất dễ uống.' },
+      { jp: '東京の地下鉄は複雑で、わかりにくいです。', furigana: 'とうきょうのちかてつはふくざつで、わかりにくいです。', vi: 'Tàu điện ngầm Tokyo phức tạp nên rất khó hiểu.' },
+    ],
+  },
+  {
+    id: 'n4-g9-te-oku',
+    title: 'V-ておく (Chuẩn bị trước / Giữ nguyên trạng thái)',
+    level: 'N4',
+    category: 'Chuẩn bị thực chiến',
+    formation: 'V-て + おきます (Văn nói rút gọn: ～とく)',
+    meaningVi: 'Làm sẵn trước cái gì đó...',
+    explanationVi: 'Dùng khi thực hiện một hành động chuẩn bị cho mục đích trong tương lai, hoặc giữ nguyên trạng thái sẵn sàng.',
+    examples: [
+      { jp: 'パーティーの前に、ビールを買っておきます。', furigana: 'パーティーのまえに、ビールをかっておきます。', vi: 'Trước bữa tiệc, tôi sẽ mua sẵn bia.' },
+      { jp: '窓を開けておいてください。', furigana: 'まどをあけておいてください。', vi: 'Xin hãy để cửa sổ mở sẵn như vậy.' },
+    ],
+  },
 ];
+

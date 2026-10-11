@@ -14,7 +14,7 @@ import { N4_VOCAB_SRS } from '../data/n4/vocab';
 import { N3_VOCAB_SRS } from '../data/n3/vocab';
 import { DOKKAI_READINGS } from '../data/n3/readings';
 
-export const CURRENT_DATA_VERSION = '1.1.0';
+export const CURRENT_DATA_VERSION = '2.0.0';
 
 export const CHUNK_FILES = [
   'kana.json',
@@ -28,6 +28,8 @@ export const CHUNK_FILES = [
   'n4_vocab.json',
   'n3_vocab.json',
   'n3_readings.json',
+  'phonetic_rules.json',
+  'nuance_pairs.json',
 ];
 
 export const CHUNK_STORE_MAP: Record<string, string> = {

@@ -83,4 +83,57 @@ export const N3_GRAMMAR: GrammarItem[] = [
       trick: 'Cảm ơn người khác -> おかげで; Muốn kiếm cớ trách ai -> せいで.',
     },
   },
+  {
+    id: 'n3-g5-hazu-ga-nai',
+    title: '～はずがない (Tuyệt đối không thể nào có chuyện...)',
+    level: 'N3',
+    category: 'Phán đoán & Phủ định chắc chắn',
+    formation: 'Thể thông thường (Pi) + はずがない (A-na な / N の)',
+    meaningVi: 'Chắc chắn không thể... / Không lý nào lại như vậy',
+    explanationVi: 'Dựa trên chứng cứ hoặc logic hiển nhiên, người nói khẳng định 100% điều đó hoàn toàn vô lý và không thể xảy ra.',
+    examples: [
+      { jp: 'あんなに真面目な彼が、嘘をつくはずがない。', furigana: 'あんなにまじめなかれが、うそをつくはずがない。', vi: 'Người đứng đắn như anh ấy, tuyệt đối không thể nào nói dối được!' },
+      { jp: '昨日買ったばかりだから、壊れるはずがない。', furigana: 'きのうかったばかりだから、こわれるはずがない。', vi: 'Vừa mới mua hôm qua, không lý nào lại hỏng được.' },
+    ],
+  },
+  {
+    id: 'n3-g6-you-ni-suru',
+    title: 'V-ようにする / V-ようになる (Nỗ lực thay đổi thói quen)',
+    level: 'N3',
+    category: 'Ý chí & Thay đổi trạng thái',
+    formation: 'V-る / V-ない + ようにする (Nỗ lực bản thân) | V-る + ようになる (Tự nhiên thay đổi)',
+    meaningVi: 'ようにする: Cố gắng duy trì thói quen | ようになる: Đã trở nên làm được gì đó',
+    explanationVi: 'ようにする thể hiện ý thức rèn luyện mỗi ngày (uống nhiều nước, ngủ sớm). ようになる diễn tả sự biến đổi tự nhiên của năng lực theo thời gian.',
+    examples: [
+      { jp: '毎日野菜をたくさん食べるようにしています。', furigana: 'まいにちやさいをたくさんたべるようにしています。', vi: 'Tôi đang luôn cố gắng ăn thật nhiều rau mỗi ngày.' },
+      { jp: '日本に来てから、納豆が食べられるようになりました。', furigana: 'にほんにきてから、なっとうがたべられるようになりました。', vi: 'Kể từ khi sang Nhật, tôi đã có thể ăn được món Natto.' },
+    ],
+  },
+  {
+    id: 'n3-g7-koto-ni-suru',
+    title: 'V-ことにする / V-ことになる (Quyết định cá nhân vs Khách quan)',
+    level: 'N3',
+    category: 'Quyết định hành động',
+    formation: 'V-る / V-ない + ことにする / ことになる',
+    meaningVi: 'ことにする: Bản thân tự quyết định | ことになる: Được cơ quan/hoàn cảnh an bài',
+    explanationVi: 'Cực kỳ quan trọng trong giao tiếp công sở Nhật Bản: khi báo cáo với sếp hoặc khách hàng thì dùng ことになりました để tạo cảm giác tôn trọng quyết định tập thể.',
+    examples: [
+      { jp: '来年、日本へ留学することにしました。', furigana: 'らいねん、にほんへりゅうがくすることにしました。', vi: 'Tôi đã tự mình quyết định năm sau sẽ đi du học Nhật Bản.' },
+      { jp: '来月から大阪へ転勤することになりました。', furigana: 'らいげつからおおさかへてんきんすることになりました。', vi: 'Tôi đã được công ty quyết định chuyển công tác về Osaka từ tháng sau.' },
+    ],
+  },
+  {
+    id: 'n3-g8-wari-ni',
+    title: '～わりに(は) (So với mức độ thì bất ngờ)',
+    level: 'N3',
+    category: 'Đối chiếu & Mức độ',
+    formation: 'Thể thông thường (Pi) + わりに(は) (A-na な / N の)',
+    meaningVi: 'Tuy là... thế nhưng mà / So với...',
+    explanationVi: 'Biểu thị kết quả hay thực tế khác biệt so với tiêu chuẩn thông thường (giá rẻ mà ngon bất ngờ, tuổi trẻ mà làm việc rất chu đáo).',
+    examples: [
+      { jp: 'この料理は値段のわりに、とても美味しい。', furigana: 'このりょうりはねだんのわりに、とてもおいしい。', vi: 'Món ăn này ngon bất ngờ so với giá tiền bình dân của nó.' },
+      { jp: '彼は70歳という年齢のわりに、若々しい。', furigana: 'かれはななじゅっさいというねんれいのわりに、わかわかしい。', vi: 'So với độ tuổi 70 của mình, ông ấy trông trẻ trung lạ thường.' },
+    ],
+  },
 ];
+

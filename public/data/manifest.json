@@ -1,42 +1,42 @@
 {
-  "version": "1.1.0",
-  "generatedAt": "2026-10-11T23:42:58.285Z",
+  "version": "2.0.0",
+  "generatedAt": "2026-10-11T23:52:14.420Z",
   "chunks": {
     "kana.json": {
       "count": 126,
       "size": 30004
     },
     "n5_kanji.json": {
-      "count": 16,
-      "size": 10561
+      "count": 33,
+      "size": 22088
     },
     "n5_grammar.json": {
-      "count": 5,
-      "size": 6517
+      "count": 9,
+      "size": 10217
     },
     "n5_vocab.json": {
       "count": 12,
       "size": 2630
     },
     "n4_kanji.json": {
-      "count": 10,
-      "size": 6170
+      "count": 21,
+      "size": 13822
     },
     "n4_grammar.json": {
-      "count": 5,
-      "size": 7499
+      "count": 9,
+      "size": 10795
     },
     "n4_vocab.json": {
       "count": 10,
       "size": 2437
     },
     "n3_kanji.json": {
-      "count": 8,
-      "size": 5499
+      "count": 18,
+      "size": 12322
     },
     "n3_grammar.json": {
-      "count": 4,
-      "size": 7665
+      "count": 8,
+      "size": 11886
     },
     "n3_vocab.json": {
       "count": 10,
@@ -45,6 +45,14 @@
     "n3_readings.json": {
       "count": 3,
       "size": 10919
+    },
+    "phonetic_rules.json": {
+      "count": 21,
+      "size": 12734
+    },
+    "nuance_pairs.json": {
+      "count": 11,
+      "size": 13586
     }
   }
 }
