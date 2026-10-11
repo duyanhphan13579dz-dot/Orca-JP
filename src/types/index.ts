@@ -120,3 +120,41 @@ export interface UserStats {
   totalReviewsCompleted: number;
   kanaSpeedBest: number;
 }
+
+export interface HistoryRecord {
+  id: string;
+  type: 'review' | 'quiz' | 'reading' | 'kana_game';
+  itemId?: string;
+  score?: number;
+  details?: Record<string, unknown>;
+  timestamp: number;
+}
+
+export interface DailyStreakRecord {
+  date: string; // YYYY-MM-DD
+  reviewsCount: number;
+  durationMinutes: number;
+}
+
+export interface BookmarkRecord {
+  id: string;
+  itemType: 'kanji' | 'grammar' | 'vocab' | 'reading';
+  level: JLPTLevel;
+  title?: string;
+  tags?: string[];
+  timestamp: number;
+}
+
+export interface CustomTag {
+  id: string;
+  name: string;
+  color: string;
+}
+
+export interface DatabaseSyncStatus {
+  status: 'idle' | 'loading' | 'ready' | 'error';
+  loadedChunks: string[];
+  progress: number;
+  totalItems: number;
+  lastUpdated?: string;
+}

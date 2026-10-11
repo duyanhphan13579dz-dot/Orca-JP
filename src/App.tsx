@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { JLPTLevel, MainTab } from './types';
+import { JLPTLevel, MainTab, KanjiItem, GrammarItem } from './types';
 import { useSRSIndexedDB } from './hooks/useSRSIndexedDB';
+import { useDatabaseSync } from './hooks/useDatabaseSync';
+import { dataLoader } from './db/dataLoader';
 import { HeaderStats } from './components/layout/HeaderStats';
 import { BentoSidebar } from './components/layout/BentoSidebar';
 import { LevelSelector } from './components/common/LevelSelector';
@@ -58,6 +60,25 @@ export function App() {
   const [grammarSubView, setGrammarSubView] = useState<'all' | 'nuance' | 'verbs' | 'sov'>('all');
   const [kanaSubView, setKanaSubView] = useState<'grid' | 'game'>('grid');
 
+  // IndexedDB data synchronization engine
+  const { isLoading: isSyncing, progress: syncProgress, syncStatus } = useDatabaseSync();
+  const [dbKanji, setDbKanji] = useState<KanjiItem[]>([]);
+  const [dbGrammar, setDbGrammar] = useState<GrammarItem[]>([]);
+
+  // Fetch dynamic items from IndexedDB whenever level or sync state updates
+  useEffect(() => {
+    let isMounted = true;
+    dataLoader.getKanji(currentLevel).then((res) => {
+      if (isMounted) setDbKanji(res);
+    });
+    dataLoader.getGrammar(currentLevel).then((res) => {
+      if (isMounted) setDbGrammar(res);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [currentLevel, syncStatus.status]);
+
   // IndexedDB SRS hook
   const { cards, stats, reloadData, reviewCard, getDueCards, seedDefaultCards } = useSRSIndexedDB();
 
@@ -91,30 +112,33 @@ export function App() {
     return getDueCards(currentLevel);
   }, [getDueCards, currentLevel]);
 
-  // All Kanji based on current level
+  // All Kanji based on current level (queries IndexedDB cache with static fallback)
   const activeKanjiList = useMemo(() => {
-    let list = N5_KANJI;
-    if (currentLevel === 'N4') list = N4_KANJI;
-    if (currentLevel === 'N3') list = N3_KANJI;
-    if (currentLevel === 'Zero') list = N5_KANJI;
+    let list = dbKanji.length > 0 ? dbKanji : N5_KANJI;
+    if (dbKanji.length === 0) {
+      if (currentLevel === 'N4') list = N4_KANJI;
+      if (currentLevel === 'N3') list = N3_KANJI;
+      if (currentLevel === 'Zero') list = N5_KANJI;
+    }
 
     if (!kanjiSearch) return list;
     const q = kanjiSearch.toLowerCase();
     return list.filter(
-      k =>
+      (k) =>
         k.kanji.includes(q) ||
         k.hanViet.toLowerCase().includes(q) ||
         k.meaningVi.toLowerCase().includes(q) ||
-        k.onyomi.some(on => on.toLowerCase().includes(q))
+        k.onyomi.some((on) => on.toLowerCase().includes(q))
     );
-  }, [currentLevel, kanjiSearch]);
+  }, [currentLevel, dbKanji, kanjiSearch]);
 
-  // Grammar list based on level
+  // Grammar list based on level (queries IndexedDB cache with static fallback)
   const activeGrammarList = useMemo(() => {
+    if (dbGrammar.length > 0) return dbGrammar;
     if (currentLevel === 'N4') return N4_GRAMMAR;
     if (currentLevel === 'N3') return N3_GRAMMAR;
     return N5_GRAMMAR;
-  }, [currentLevel]);
+  }, [currentLevel, dbGrammar]);
 
   // Mascot mood adaptation
   const mascotMood: OrcaMood = useMemo(() => {
@@ -133,6 +157,8 @@ export function App() {
         isDark={isDark}
         onToggleTheme={() => setIsDark(prev => !prev)}
         onOpenBackup={() => setIsBackupOpen(true)}
+        isSyncing={isSyncing}
+        syncProgress={syncProgress}
       />
 
       {/* Main Content Wrap */}

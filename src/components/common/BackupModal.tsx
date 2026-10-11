@@ -21,8 +21,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
   const handleExport = async () => {
     try {
       setIsProcessing(true);
-      const dataStr = await dbInstance.exportFullBackup();
-      const blob = new Blob([dataStr], { type: 'application/json' });
+      const blob = await dbInstance.exportFullBackupBlob();
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -50,34 +49,29 @@ export const BackupModal: React.FC<BackupModalProps> = ({
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsProcessing(true);
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const content = e.target?.result as string;
-        const success = await dbInstance.importFullBackup(content);
-        if (success) {
-          setStatusMessage({
-            type: 'success',
-            text: 'Khôi phục tiến trình học thành công từ file backup!',
-          });
-          onDataChanged();
-        } else {
-          setStatusMessage({
-            type: 'error',
-            text: 'Định dạng tệp tin không hợp lệ!',
-          });
-        }
-      } catch {
+    try {
+      setIsProcessing(true);
+      const success = await dbInstance.importFullBackupBlob(file);
+      if (success) {
+        setStatusMessage({
+          type: 'success',
+          text: 'Khôi phục tiến trình học thành công từ file backup V2.0!',
+        });
+        onDataChanged();
+      } else {
         setStatusMessage({
           type: 'error',
-          text: 'Lỗi đọc tệp backup.',
+          text: 'Định dạng tệp tin không hợp lệ hoặc dữ liệu hỏng!',
         });
-      } finally {
-        setIsProcessing(false);
       }
-    };
-    reader.readAsText(file);
+    } catch {
+      setStatusMessage({
+        type: 'error',
+        text: 'Lỗi trong quá trình khôi phục dữ liệu.',
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (

@@ -1,13 +1,15 @@
 import React from 'react';
 import { Logo } from '../branding/Logo';
 import { UserStats } from '../../types';
-import { Flame, Moon, Sun, Database } from 'lucide-react';
+import { Flame, Moon, Sun, Database, RefreshCw } from 'lucide-react';
 
 interface HeaderStatsProps {
   stats: UserStats | null;
   isDark: boolean;
   onToggleTheme: () => void;
   onOpenBackup: () => void;
+  isSyncing?: boolean;
+  syncProgress?: number;
 }
 
 export const HeaderStats: React.FC<HeaderStatsProps> = ({
@@ -15,6 +17,8 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
   isDark,
   onToggleTheme,
   onOpenBackup,
+  isSyncing,
+  syncProgress,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 sm:px-6 py-3 transition-colors">
@@ -32,6 +36,17 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
             <Flame className="w-4 h-4 fill-amber-500 text-amber-500 animate-pulse" />
             <span>{stats?.streak || 1} ngày</span>
           </div>
+
+          {/* Sync status indicator */}
+          {isSyncing && (
+            <div
+              title="Đang đồng bộ dữ liệu vào IndexedDB"
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30 text-xs font-semibold animate-pulse"
+            >
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+              <span>Nạp DB {syncProgress}%</span>
+            </div>
+          )}
 
           {/* Backup / Restore Modal Trigger */}
           <button
