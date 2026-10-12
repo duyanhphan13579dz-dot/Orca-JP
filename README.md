@@ -59,7 +59,7 @@
   - Điểm nhấn: *Cyan Neon Wave* (`#06B6D4` / `#0EA5E9`).
   - Màu cấp bậc JLPT: N5 (Xanh ngọc lợt), N4 (Xanh đại dương), N3 (Tím biển sâu).
 - **Hỗ trợ Dark / Light Mode** mượt mà.
-- **Sao lưu & Phục hồi 1-Click:** Xuất/nhập toàn bộ tiến trình học tập ra file `orca-jp-progress.json`.
+- **Sao lưu & Phục hồi 1-Click:** Xuất/nhập toàn bộ tiến trình học tập ra file `o-shachi-progress.json`.
 
 ---
 

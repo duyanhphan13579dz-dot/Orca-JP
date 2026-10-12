@@ -1,6 +1,6 @@
-# 🤝 Đóng Góp Phát Triển Dự Án Orca JP
+# 🤝 Đóng Góp Phát Triển Dự Án O-Shachi
 
-Cảm ơn bạn đã quan tâm đến việc đóng góp cho **Orca JP**! Dự án hướng tới một nền tảng học tiếng Nhật mã nguồn mở, vận hành 100% tĩnh (Client-side), tốc độ cao và thân thiện cho cộng đồng.
+Cảm ơn bạn đã quan tâm đến việc đóng góp cho **O-Shachi**! Dự án hướng tới một nền tảng học tiếng Nhật mã nguồn mở, vận hành 100% tĩnh (Client-side), tốc độ cao và thân thiện cho cộng đồng.
 
 ---
 

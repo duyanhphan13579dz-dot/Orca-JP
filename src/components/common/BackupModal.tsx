@@ -25,7 +25,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `orca-jp-progress-${new Date().toISOString().slice(0, 10)}.json`;
+      link.download = `o-shachi-progress-${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -33,7 +33,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
 
       setStatusMessage({
         type: 'success',
-        text: 'Đã xuất file orca-jp-progress.json thành công!',
+        text: 'Đã xuất file o-shachi-progress.json thành công!',
       });
     } catch (e) {
       setStatusMessage({
