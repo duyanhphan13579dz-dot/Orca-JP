@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { Play, RotateCcw, Volume2, Sparkles, PenTool, ArrowRight, Lightbulb } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Play, RotateCcw, Volume2, Sparkles, PenTool, ArrowRight, Lightbulb, Compass, CheckCircle2 } from 'lucide-react';
 import { useSpeech } from '../../hooks/useSpeech';
 import { VirtualCanvas } from '../kanji/VirtualCanvas';
+import { getStrokeGuide } from '../../data/kanaStrokeGuides';
 
 interface StrokePlayerProps {
   char: string;
@@ -23,9 +24,13 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
   initialMode = 'guide',
 }) => {
   const [viewMode, setViewMode] = useState<'guide' | 'practice'>(initialMode);
+  const [activeStepTab, setActiveStepTab] = useState<number>(0); // 0 = all steps
+  const [showBadges, setShowBadges] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [key, setKey] = useState(0);
   const { speak } = useSpeech();
+
+  const guideData = useMemo(() => getStrokeGuide(char, strokes), [char, strokes]);
 
   const handleReplay = () => {
     setIsPlaying(false);
@@ -34,15 +39,6 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
       setIsPlaying(true);
       speak(char, 'Zero');
     }, 50);
-  };
-
-  // Rule tip based on stroke count
-  const getStrokeRuleTip = (s: number) => {
-    if (s === 1) return 'Viết 1 nét liền mạch: Bắt đầu từ trên/trái, uốn lượn dứt khoát không ngắt tay.';
-    if (s === 2) return 'Viết 2 nét: Nét 1 (trái/trên) trước, nét 2 (phải/dưới) kéo dài hoặc uốn vòm sau.';
-    if (s === 3) return 'Viết 3 nét: Nét ngang trên trước, nét giữa đứng sau, nét uốn cong/phẩy sau cùng.';
-    if (s === 4) return 'Quy tắc bút thuận: Trên trước dưới sau, trái trước phải sau, nét ngang trước nét sổ.';
-    return 'Quy tắc bút thuận chuẩn: Từ trên xuống dưới, từ trái sang phải, bao quanh trước đóng đáy sau.';
   };
 
   return (
@@ -83,25 +79,42 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
             /{romaji}/
           </span>
         </div>
-        <button
-          onClick={() => speak(char, 'Zero')}
-          className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-cyan-500 transition cursor-pointer"
-          title="Nghe phát âm chuẩn"
-        >
-          <Volume2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {viewMode === 'guide' && (
+            <button
+              onClick={() => setShowBadges(prev => !prev)}
+              title={showBadges ? 'Ẩn điểm đặt bút ①②③' : 'Hiện điểm đặt bút ①②③'}
+              className={`p-1.5 rounded-xl border text-xs transition cursor-pointer flex items-center gap-1 ${
+                showBadges
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-transparent'
+              }`}
+            >
+              <Compass className="w-3.5 h-3.5" />
+              <span className="text-[10px] font-semibold hidden sm:inline">Điểm bút</span>
+            </button>
+          )}
+          <button
+            onClick={() => speak(char, 'Zero')}
+            className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-cyan-500 transition cursor-pointer"
+            title="Nghe phát âm chuẩn"
+          >
+            <Volume2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* MODE 1: HƯỚNG DẪN ĐI NÉT & ANIMATION */}
       {viewMode === 'guide' && (
-        <div className="w-full flex flex-col items-center animate-fade-in">
+        <div className="w-full flex flex-col items-center animate-fade-in space-y-3">
           {/* Grid Canvas for Kanji / Kana strokes */}
-          <div className="relative w-44 h-44 bg-slate-50 dark:bg-slate-950/70 rounded-3xl border-2 border-dashed border-cyan-500/30 flex items-center justify-center overflow-hidden my-2 group shadow-inner">
+          <div className="relative w-44 h-44 bg-slate-50 dark:bg-slate-950/70 rounded-3xl border-2 border-dashed border-cyan-500/30 flex items-center justify-center overflow-hidden my-1 group shadow-inner select-none">
             {/* Japanese Genkouyoushi calligraphy guide lines */}
             <line x1="88" y1="0" x2="88" y2="176" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" className="text-slate-200 dark:text-slate-800" />
             <line x1="0" y1="88" x2="176" y2="88" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" className="text-slate-200 dark:text-slate-800" />
             <circle cx="88" cy="88" r="78" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 3" className="text-slate-200/60 dark:text-slate-800/60" />
 
+            {/* Glyph display or SVG Stroke Path */}
             {strokeSvgPath ? (
               <svg key={key} width="150" height="150" viewBox="0 0 100 100" className="stroke-current text-slate-800 dark:text-cyan-300">
                 <path
@@ -129,11 +142,42 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
               </div>
             )}
 
+            {/* Visual Numbered Stroke Badges with Directional Arrows */}
+            {showBadges && (
+              <div className="absolute inset-0 pointer-events-none z-10">
+                {guideData.steps.map((st) => {
+                  const isCurrent = activeStepTab === st.num;
+                  const isFiltered = activeStepTab !== 0 && !isCurrent;
+                  return (
+                    <div
+                      key={st.num}
+                      style={{
+                        left: `${st.start.x}%`,
+                        top: `${st.start.y}%`,
+                      }}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-black shadow-md border transition-all duration-300 ${
+                        isCurrent
+                          ? 'bg-amber-400 text-slate-900 border-white ring-2 ring-amber-400/80 scale-110 z-20 animate-bounce'
+                          : isFiltered
+                          ? 'bg-slate-700/50 text-white/40 border-slate-700/50 scale-75 opacity-40'
+                          : 'bg-slate-900/90 dark:bg-slate-800/90 text-cyan-400 border-cyan-500/40 opacity-90 scale-95 z-10'
+                      }`}
+                    >
+                      <span>{st.num}</span>
+                      <span className="font-mono text-[10px] leading-none text-amber-500 dark:text-amber-300">
+                        {st.arrow}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Floating Play Overlay button if not playing */}
             {!isPlaying && (
               <button
                 onClick={handleReplay}
-                className="absolute inset-0 m-auto w-11 h-11 rounded-full bg-cyan-500 text-white flex items-center justify-center opacity-85 hover:opacity-100 transition shadow-lg cursor-pointer scale-95 hover:scale-105"
+                className="absolute inset-0 m-auto w-11 h-11 rounded-full bg-cyan-500 text-white flex items-center justify-center opacity-85 hover:opacity-100 transition shadow-lg cursor-pointer scale-95 hover:scale-105 z-20"
                 title="Phát hoạt họa nét viết"
               >
                 <Play className="w-5 h-5 ml-0.5" />
@@ -141,14 +185,14 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
             )}
           </div>
 
-          {/* Action Button: Xem lại & Chuyển sang tập viết */}
-          <div className="flex items-center gap-2 mt-2 w-full">
+          {/* Action Buttons: Xem lại & Chuyển sang tập viết */}
+          <div className="flex items-center gap-2 w-full">
             <button
               onClick={handleReplay}
               className="flex-1 py-1.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-cyan-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" />
-              Xem lại nét
+              <span>Xem lại animation</span>
             </button>
             <button
               onClick={() => setViewMode('practice')}
@@ -159,20 +203,89 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
             </button>
           </div>
 
-          {/* Stroke Rules Tip */}
-          <div className="mt-3 p-2.5 rounded-2xl bg-cyan-500/5 dark:bg-cyan-950/20 border border-cyan-500/20 text-slate-700 dark:text-slate-300 text-xs text-left w-full flex items-start gap-2">
+          {/* Step-by-Step Navigation Pills */}
+          <div className="w-full">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400 mb-1.5">
+              <span>Đường đi của nét bút ({guideData.steps.length} nét):</span>
+              <span className="text-[10px] font-normal text-cyan-600 dark:text-cyan-400">Chọn nét để xem hướng</span>
+            </div>
+
+            <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pb-1">
+              <button
+                onClick={() => setActiveStepTab(0)}
+                className={`px-2.5 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer flex-shrink-0 ${
+                  activeStepTab === 0
+                    ? 'bg-cyan-500 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                }`}
+              >
+                Tất cả nét
+              </button>
+              {guideData.steps.map((st) => (
+                <button
+                  key={st.num}
+                  onClick={() => setActiveStepTab(st.num)}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1 cursor-pointer flex-shrink-0 ${
+                    activeStepTab === st.num
+                      ? 'bg-amber-400 text-slate-900 shadow-xs ring-2 ring-amber-400/40'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:text-slate-900'
+                  }`}
+                >
+                  <span>Nét {st.num}</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400">{st.arrow}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Detailed Stroke Instruction Breakdown List */}
+          <div className="w-full space-y-1.5 max-h-48 overflow-y-auto no-scrollbar pr-0.5">
+            {guideData.steps
+              .filter((st) => activeStepTab === 0 || activeStepTab === st.num)
+              .map((st) => (
+                <div
+                  key={st.num}
+                  onClick={() => setActiveStepTab(st.num)}
+                  className={`p-2.5 rounded-2xl border transition-all text-xs text-left cursor-pointer ${
+                    activeStepTab === st.num
+                      ? 'bg-amber-500/10 dark:bg-amber-950/20 border-amber-500/40 ring-1 ring-amber-500/30'
+                      : 'bg-slate-50 dark:bg-slate-950/50 border-slate-200 dark:border-slate-800 hover:border-cyan-500/30'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-5 h-5 rounded-full bg-cyan-500 text-white text-[11px] font-black flex items-center justify-center flex-shrink-0">
+                        {st.num}
+                      </span>
+                      <span className="font-bold text-slate-900 dark:text-white">
+                        Hướng đi: {st.direction}
+                      </span>
+                    </div>
+                    <span className="font-mono text-base font-bold text-amber-500 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-lg">
+                      {st.arrow}
+                    </span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed pl-6">
+                    {st.tip}
+                  </p>
+                </div>
+              ))}
+          </div>
+
+          {/* General Calligraphy Rule Tip */}
+          <div className="p-2.5 rounded-2xl bg-cyan-500/5 dark:bg-cyan-950/20 border border-cyan-500/20 text-slate-700 dark:text-slate-300 text-xs text-left w-full flex items-start gap-2">
             <Lightbulb className="w-4 h-4 text-cyan-500 flex-shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold text-cyan-600 dark:text-cyan-400">Hướng dẫn đi nét: </span>
-              <span>{getStrokeRuleTip(strokes)}</span>
+              <span className="font-bold text-cyan-600 dark:text-cyan-400">Quy tắc bút thuận: </span>
+              <span className="text-[11px]">{guideData.generalRule}</span>
             </div>
           </div>
 
           {/* Mnemonic Vi */}
           {mnemonicVi && (
-            <div className="mt-2 p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs text-left w-full">
+            <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs text-left w-full">
               <span className="font-bold mr-1">💡 Mẹo nhớ:</span>
-              {mnemonicVi}
+              <span className="text-[11px]">{mnemonicVi}</span>
             </div>
           )}
         </div>
@@ -189,7 +302,7 @@ export const StrokePlayer: React.FC<StrokePlayerProps> = ({
           />
 
           <div className="mt-3 text-[11px] text-slate-500 dark:text-slate-400 text-center">
-            💡 Dùng ngón tay / bút cảm ứng đồ theo nét chữ mờ trên ô kẻ chuẩn.
+            💡 Dùng ngón tay / bút cảm ứng đồ theo các điểm đánh số ① ② ③ và mũi tên chỉ hướng.
           </div>
         </div>
       )}

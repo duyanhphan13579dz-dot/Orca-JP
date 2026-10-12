@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { RotateCcw, Play, CheckCircle2, AlertCircle, Eye, EyeOff, Sparkles, Undo2 } from 'lucide-react';
+import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { RotateCcw, Play, CheckCircle2, AlertCircle, Eye, EyeOff, Sparkles, Undo2, Compass } from 'lucide-react';
 import { useSoundEffects } from '../../hooks/useSoundEffects';
+import { getStrokeGuide } from '../../data/kanaStrokeGuides';
 
 interface VirtualCanvasProps {
   guideChar: string;
@@ -19,11 +20,14 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
   const activeTouchIdRef = useRef<number | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showGhostGuide, setShowGhostGuide] = useState(true);
+  const [showDirectionGuides, setShowDirectionGuides] = useState(true);
   const showGrid = true;
   const [activeMode, setActiveMode] = useState<'guided' | 'freehand'>('guided');
   const [userStrokeCount, setUserStrokeCount] = useState(0);
   const [strokeHistory, setStrokeHistory] = useState<ImageData[]>([]);
   const [isAnimatingStroke, setIsAnimatingStroke] = useState(false);
+
+  const strokeGuide = useMemo(() => getStrokeGuide(guideChar, strokesCount), [guideChar, strokesCount]);
 
   const { playCorrect } = useSoundEffects();
 
@@ -298,6 +302,36 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
           </div>
         )}
 
+        {/* Stroke Order Numbered Badges & Direction Indicators */}
+        {showDirectionGuides && showGhostGuide && activeMode === 'guided' && (
+          <div className="absolute inset-0 pointer-events-none z-10">
+            {strokeGuide.steps.map((st) => {
+              const isCurrent = userStrokeCount + 1 === st.num;
+              const isDone = userStrokeCount >= st.num;
+              return (
+                <div
+                  key={st.num}
+                  style={{
+                    left: `${st.start.x}%`,
+                    top: `${st.start.y}%`,
+                  }}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-black shadow-md border transition-all duration-300 ${
+                    isDone
+                      ? 'bg-emerald-500 text-white border-white/80 opacity-40 scale-75'
+                      : isCurrent
+                      ? 'bg-amber-400 text-slate-900 border-white ring-2 ring-amber-400/60 scale-105 animate-pulse'
+                      : 'bg-slate-800/90 text-white border-slate-600 opacity-75 scale-90'
+                  }`}
+                  title={`Nét ${st.num}: ${st.direction}`}
+                >
+                  <span>{st.num}</span>
+                  <span className="font-mono text-[10px] leading-none">{st.arrow}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {/* Interactive Drawing Canvas */}
         <canvas
           ref={canvasRef}
@@ -321,7 +355,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
 
       {/* Control Buttons Bar */}
       <div className="flex flex-wrap items-center justify-center gap-2 mt-3 max-w-xs sm:max-w-sm">
-        {/* Toggle Ghost Kanji */}
+        {/* Toggle Ghost Character */}
         <button
           onClick={() => setShowGhostGuide((prev) => !prev)}
           title={showGhostGuide ? 'Ẩn nét chữ mẫu' : 'Hiện nét chữ mẫu'}
@@ -329,6 +363,21 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
         >
           {showGhostGuide ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
         </button>
+
+        {/* Toggle Direction Markers & Arrows */}
+        {activeMode === 'guided' && (
+          <button
+            onClick={() => setShowDirectionGuides((prev) => !prev)}
+            title={showDirectionGuides ? 'Ẩn số thứ tự nét & hướng vẽ' : 'Hiện số thứ tự nét & hướng vẽ'}
+            className={`p-2 rounded-xl border transition cursor-pointer ${
+              showDirectionGuides
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30'
+                : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 text-slate-400 border-transparent'
+            }`}
+          >
+            <Compass className="w-4 h-4" />
+          </button>
+        )}
 
         {/* Play Stroke Animation */}
         <button
