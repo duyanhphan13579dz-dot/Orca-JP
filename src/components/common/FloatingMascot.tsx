@@ -23,12 +23,12 @@ export const FloatingMascot: React.FC = () => {
   const currentQuote = MOTIVATIONAL_QUOTES[quoteIndex];
 
   return (
-    <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end select-none">
+    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 flex flex-col items-end select-none">
       {/* Speech Bubble Popup */}
       {isOpen && (
         <div
           key={bubbleKey}
-          className="mb-3 max-w-[260px] p-3.5 bg-white dark:bg-slate-900 border border-cyan-500/30 rounded-3xl shadow-2xl backdrop-blur-md animate-scale-up text-slate-800 dark:text-slate-100 relative"
+          className="mb-2 max-w-[240px] p-3 bg-white dark:bg-slate-900 border border-cyan-500/30 rounded-2xl shadow-2xl backdrop-blur-md animate-scale-up text-slate-800 dark:text-slate-100 relative"
         >
           <button
             onClick={() => setIsOpen(false)}
@@ -54,7 +54,7 @@ export const FloatingMascot: React.FC = () => {
           </div>
 
           {/* Pointer tail */}
-          <div className="absolute -bottom-1.5 right-6 w-3 h-3 bg-white dark:bg-slate-900 border-b border-r border-cyan-500/30 rotate-45" />
+          <div className="absolute -bottom-1.5 right-4 w-3 h-3 bg-white dark:bg-slate-900 border-b border-r border-cyan-500/30 rotate-45" />
         </div>
       )}
 
@@ -62,9 +62,9 @@ export const FloatingMascot: React.FC = () => {
       <div
         onClick={handleClickMascot}
         title="Nhấp để nghe O-Shachi-kun động viên học tập!"
-        className="group relative cursor-pointer flex items-center justify-center p-1 rounded-3xl bg-white dark:bg-slate-900 ring-2 ring-cyan-500/50 hover:ring-cyan-400 shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
+        className="group relative cursor-pointer flex items-center justify-center p-0.5 rounded-2xl bg-white dark:bg-slate-900 ring-2 ring-cyan-500/50 hover:ring-cyan-400 shadow-lg hover:scale-110 active:scale-95 transition-all duration-300"
       >
-        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-white p-0.5">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden bg-white p-0.5">
           <img
             src="./orca-mascot.png"
             alt="O-Shachi-kun Mascot Mini"
@@ -73,9 +73,9 @@ export const FloatingMascot: React.FC = () => {
         </div>
 
         {/* Pulsing notification badge */}
-        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-cyan-500 border border-white dark:border-slate-900 items-center justify-center text-[9px] text-white font-bold">
+          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-cyan-500 border border-white dark:border-slate-900 items-center justify-center text-[8px] text-white font-bold">
             !
           </span>
         </span>
