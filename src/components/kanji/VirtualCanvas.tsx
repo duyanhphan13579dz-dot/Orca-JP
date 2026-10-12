@@ -6,12 +6,14 @@ interface VirtualCanvasProps {
   guideChar: string;
   strokesCount?: number;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
   guideChar,
   strokesCount = 4,
   className = '',
+  size = 'md',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const activeTouchIdRef = useRef<number | null>(null);
@@ -193,7 +195,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
     const interval = setInterval(() => {
       progress += 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = 'bold 150px sans-serif';
+      ctx.font = 'bold 150px "Noto Sans JP", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = `rgba(6, 182, 212, ${progress / 10})`;
@@ -261,7 +263,15 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
       </div>
 
       {/* Main Genkouyoushi Square Canvas */}
-      <div className="relative w-72 h-72 sm:w-80 sm:h-80 max-w-full aspect-square bg-slate-50 dark:bg-slate-950 rounded-3xl border-2 border-cyan-500/40 shadow-inner overflow-hidden select-none touch-none">
+      <div
+        className={`relative max-w-full aspect-square bg-slate-50 dark:bg-slate-950 rounded-3xl border-2 border-cyan-500/40 shadow-inner overflow-hidden select-none touch-none ${
+          size === 'sm'
+            ? 'w-56 h-56 sm:w-60 sm:h-60'
+            : size === 'lg'
+            ? 'w-72 h-72 sm:w-80 sm:h-80'
+            : 'w-64 h-64 sm:w-72 sm:h-72'
+        }`}
+      >
         {/* Japanese Genkouyoushi calligraphy grid */}
         {showGrid && (
           <div className="absolute inset-0 pointer-events-none">
@@ -277,9 +287,13 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
           </div>
         )}
 
-        {/* Ghost Stroke Guide Kanji */}
+        {/* Ghost Stroke Guide Character */}
         {showGhostGuide && (
-          <div className="absolute inset-0 flex items-center justify-center font-jp text-[150px] font-black text-slate-300/30 dark:text-slate-700/40 pointer-events-none select-none transition-opacity duration-300">
+          <div
+            className={`absolute inset-0 flex items-center justify-center font-jp font-black text-slate-300/30 dark:text-slate-700/40 pointer-events-none select-none transition-opacity duration-300 ${
+              size === 'sm' ? 'text-[110px] sm:text-[120px]' : size === 'lg' ? 'text-[150px] sm:text-[170px]' : 'text-[130px] sm:text-[145px]'
+            }`}
+          >
             {guideChar}
           </div>
         )}
