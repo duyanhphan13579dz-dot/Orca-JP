@@ -1,7 +1,7 @@
 {
-  "name": "orca-jp",
+  "name": "o-shachi",
   "version": "1.0.0",
-  "description": "Nền tảng web học tiếng Nhật toàn diện Zero đến N3 (100% Client-side, Offline-first, IndexedDB, SM-2 SRS)",
+  "description": "O-Shachi - Nền tảng web học tiếng Nhật toàn diện Zero đến N3 (100% Client-side, Offline-first, IndexedDB, SM-2 SRS)",
   "private": true,
   "type": "module",
   "scripts": {

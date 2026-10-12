@@ -1,8 +1,8 @@
-# 🐋 Orca JP - Nền Tảng Học Tiếng Nhật Toàn Diện (Zero ➔ N5 ➔ N4 ➔ N3)
+# 🐋 O-Shachi (おシャチ) - Nền Tảng Học Tiếng Nhật Toàn Diện (Zero ➔ N5 ➔ N4 ➔ N3)
 
-> *"Chinh phục tiếng Nhật từ số 0 đến N3 với sức mạnh cá voi sát thủ."*
+> *"Chinh phục tiếng Nhật từ số 0 đến N3 với sức mạnh cá voi sát thủ Shachi."*
 
-**Orca JP** là nền tảng học tiếng Nhật EdTech vận hành **100% tĩnh (Client-side Only, Zero-Backend, Không phụ thuộc API bên thứ ba, Offline-First)**. Toàn bộ tiến trình học tập, hàng nghìn thẻ nhớ và dữ liệu lớn được quản lý bền vững thông qua **IndexedDB**, bộ engine âm thanh sử dụng **Web Speech API** và bộ hiệu ứng tổng hợp âm **Web Audio API**.
+**O-Shachi** là nền tảng học tiếng Nhật EdTech vận hành **100% tĩnh (Client-side Only, Zero-Backend, Không phụ thuộc API bên thứ ba, Offline-First)**. Toàn bộ tiến trình học tập, hàng nghìn thẻ nhớ và dữ liệu lớn được quản lý bền vững thông qua **IndexedDB**, bộ engine âm thanh sử dụng **Web Speech API** và bộ hiệu ứng tổng hợp âm **Web Audio API**.
 
 ---
 

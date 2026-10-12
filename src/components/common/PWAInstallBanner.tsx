@@ -79,7 +79,7 @@ export const PWAInstallBanner: React.FC = () => {
           </div>
           <div>
             <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-              <span>Cài đặt Orca JP App</span>
+              <span>Cài đặt O-Shachi App</span>
               <span className="text-[10px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 font-bold uppercase">
                 PWA
               </span>

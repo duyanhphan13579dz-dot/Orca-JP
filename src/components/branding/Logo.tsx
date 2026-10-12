@@ -29,7 +29,7 @@ export const Logo: React.FC<LogoProps> = ({
         >
           <img
             src="./orca-mascot.png"
-            alt="Orca JP Mascot"
+            alt="O-Shachi Mascot"
             className="w-full h-full object-contain select-none"
             loading="eager"
           />
@@ -39,7 +39,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div className="flex flex-col">
         <div className="flex items-center gap-2">
           <span className={`font-black tracking-tight ${text} text-slate-900 dark:text-white flex items-center`}>
-            Orca<span className="text-cyan-500 dark:text-cyan-400 ml-0.5">JP</span>
+            O-<span className="text-cyan-500 dark:text-cyan-400">Shachi</span>
           </span>
           <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-400/30">
             Zero → N3

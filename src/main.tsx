@@ -15,10 +15,10 @@ if ('serviceWorker' in navigator && window.location.protocol.startsWith('http'))
     navigator.serviceWorker
       .register('./sw.js')
       .then((reg) => {
-        console.log('Orca JP PWA Service Worker registered:', reg.scope);
+        console.log('O-Shachi PWA Service Worker registered:', reg.scope);
       })
       .catch((err) => {
-        console.warn('Orca JP Service Worker registration non-critical note:', err);
+        console.warn('O-Shachi Service Worker registration non-critical note:', err);
       });
   });
 }

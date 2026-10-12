@@ -1,9 +1,10 @@
-// Orca JP Service Worker (v2.0.0) - Offline-First Engine
-const CACHE_NAME = 'orca-jp-v2.0.0';
+// O-Shachi Service Worker (v2.0.0) - Offline-First Engine
+const CACHE_NAME = 'o-shachi-v2.0.0';
 
 const PRECACHE_ASSETS = [
   './',
   './index.html',
+  './orca-mascot.png',
   './orca-icon.svg',
   './manifest.webmanifest',
   './data/manifest.json',

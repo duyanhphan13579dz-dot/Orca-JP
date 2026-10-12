@@ -579,7 +579,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             </span>
           </div>
           <div className="text-slate-400">
-            Orca JP Spotlight • <span className="font-mono text-cyan-600 dark:text-cyan-400 font-semibold">Ctrl + K</span>
+            O-Shachi Spotlight • <span className="font-mono text-cyan-600 dark:text-cyan-400 font-semibold">Ctrl + K</span>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 {
-  "name": "Orca JP - Chinh Phục Tiếng Nhật Zero đến N3",
-  "short_name": "Orca JP",
-  "description": "Nền tảng học tiếng Nhật toàn diện 100% Client-side, Zero-Backend, Offline-First từ số 0 đến N3 với SRS Spaced Repetition, Dokkai Reader và Kanji Matrix",
+  "name": "O-Shachi - Chinh Phục Tiếng Nhật Zero đến N3",
+  "short_name": "O-Shachi",
+  "description": "O-Shachi - Nền tảng học tiếng Nhật toàn diện 100% Client-side, Zero-Backend, Offline-First từ số 0 đến N3 với SRS Spaced Repetition, Dokkai Reader và Kanji Matrix",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

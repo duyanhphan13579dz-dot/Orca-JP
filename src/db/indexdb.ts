@@ -568,7 +568,7 @@ export class OrcaIndexedDB {
     const tags = await this.getCustomTags();
 
     const payload = {
-      app: 'Orca JP',
+      app: 'O-Shachi',
       version: '2.0',
       exportedAt: new Date().toISOString(),
       stats,

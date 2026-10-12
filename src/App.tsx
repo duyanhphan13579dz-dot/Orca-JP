@@ -195,7 +195,7 @@ export function App() {
           <div className="hidden md:flex items-center gap-3 px-4 py-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
             <OrcaMascot mood={mascotMood} size={40} />
             <div className="text-xs">
-              <span className="font-bold text-cyan-600 dark:text-cyan-400">Orca-kun: </span>
+              <span className="font-bold text-cyan-600 dark:text-cyan-400">O-Shachi-kun: </span>
               <span className="text-slate-600 dark:text-slate-300">
                 {currentLevel === 'Zero' && 'Bắt đầu từ số 0 với 2 bảng chữ cái Kana!'}
                 {currentLevel === 'N5' && 'Chinh phục ngữ pháp SOV và trợ từ nhập môn!'}
@@ -469,7 +469,7 @@ export function App() {
       <footer className="mt-12 py-8 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span className="font-black text-slate-700 dark:text-slate-300">Orca JP</span>
+            <span className="font-black text-slate-700 dark:text-slate-300">O-Shachi</span>
             <span>—</span>
             <span>Chinh phục tiếng Nhật từ số 0 đến N3 với sức mạnh cá voi sát thủ</span>
           </div>

@@ -40,7 +40,7 @@ export const FloatingMascot: React.FC = () => {
 
           <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 mb-1">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Orca-kun động viên:</span>
+            <span>O-Shachi-kun động viên:</span>
           </div>
 
           <div className="font-jp font-bold text-sm text-slate-900 dark:text-white leading-snug">
@@ -61,13 +61,13 @@ export const FloatingMascot: React.FC = () => {
       {/* Mini Mascot Floating Button */}
       <div
         onClick={handleClickMascot}
-        title="Nhấp để nghe Orca-kun động viên học tập!"
+        title="Nhấp để nghe O-Shachi-kun động viên học tập!"
         className="group relative cursor-pointer flex items-center justify-center p-1 rounded-3xl bg-white dark:bg-slate-900 ring-2 ring-cyan-500/50 hover:ring-cyan-400 shadow-xl hover:scale-110 active:scale-95 transition-all duration-300"
       >
         <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-white p-0.5">
           <img
             src="./orca-mascot.png"
-            alt="Orca-kun Mascot Mini"
+            alt="O-Shachi-kun Mascot Mini"
             className="w-full h-full object-contain select-none group-hover:rotate-3 transition-transform"
           />
         </div>
