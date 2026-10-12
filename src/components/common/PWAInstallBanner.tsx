@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Download, X, Smartphone, CheckCircle2 } from 'lucide-react';
-import { Logo } from '../branding/Logo';
+import { Download, X, Smartphone } from 'lucide-react';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
