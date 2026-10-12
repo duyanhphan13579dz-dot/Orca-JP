@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, MessageCircle, Sparkles } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 
 const MOTIVATIONAL_QUOTES = [
   { jp: '頑張って！', ro: 'Ganbatte!', vi: 'Cố lên nhé! Hãy cùng Orca bơi ra biển lớn JLPT!' },
