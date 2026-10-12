@@ -2,6 +2,7 @@ import React from 'react';
 import { Logo } from '../branding/Logo';
 import { UserStats } from '../../types';
 import { Flame, Moon, Sun, Database, RefreshCw, Search } from 'lucide-react';
+import { UserMenu } from '../auth/UserMenu';
 
 interface HeaderStatsProps {
   stats: UserStats | null;
@@ -9,6 +10,7 @@ interface HeaderStatsProps {
   onToggleTheme: () => void;
   onOpenBackup: () => void;
   onOpenCommandPalette?: () => void;
+  onOpenAuthModal?: () => void;
   isSyncing?: boolean;
   syncProgress?: number;
 }
@@ -19,6 +21,7 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
   onToggleTheme,
   onOpenBackup,
   onOpenCommandPalette,
+  onOpenAuthModal,
   isSyncing,
   syncProgress,
 }) => {
@@ -82,6 +85,9 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
           </button>
+
+          {/* User Profile / Auth Button */}
+          {onOpenAuthModal && <UserMenu onOpenAuthModal={onOpenAuthModal} />}
         </div>
       </div>
     </header>

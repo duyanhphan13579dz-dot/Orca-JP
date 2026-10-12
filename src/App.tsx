@@ -10,6 +10,7 @@ import { BackupModal } from './components/common/BackupModal';
 import { CommandPalette } from './components/common/CommandPalette';
 import { PWAInstallBanner } from './components/common/PWAInstallBanner';
 import { FloatingMascot } from './components/common/FloatingMascot';
+import { AuthModal } from './components/auth/AuthModal';
 
 // Mascots & Brand
 import { OrcaMascot, OrcaMood } from './assets/mascots/OrcaMascot';
@@ -60,6 +61,7 @@ export function App() {
     return true;
   });
   const [isBackupOpen, setIsBackupOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isPhoneticRulesOpen, setIsPhoneticRulesOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [selectedReadingId, setSelectedReadingId] = useState<string | undefined>(undefined);
@@ -215,6 +217,7 @@ export function App() {
         onToggleTheme={() => setIsDark(prev => !prev)}
         onOpenBackup={() => setIsBackupOpen(true)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+        onOpenAuthModal={() => setIsAuthOpen(true)}
         isSyncing={isSyncing}
         syncProgress={syncProgress}
       />
@@ -549,6 +552,12 @@ export function App() {
         isOpen={isBackupOpen}
         onClose={() => setIsBackupOpen(false)}
         onDataChanged={reloadData}
+      />
+
+      {/* Convex Auth Modal */}
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
 
       {/* 40+ Phonetic Rules Modal */}
