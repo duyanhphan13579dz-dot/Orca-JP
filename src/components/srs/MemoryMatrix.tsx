@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserStats, SRSCard } from '../../types';
 import { OrcaMascot } from '../../assets/mascots/OrcaMascot';
-import { Flame, Calendar, Award, Database, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Flame, Calendar, Award, Database } from 'lucide-react';
 import { StudyHeatmap } from './StudyHeatmap';
 import { JLPTReadinessCard } from './JLPTReadinessCard';
 

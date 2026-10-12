@@ -10,7 +10,7 @@ import {
   ArrowRight,
   Database,
   Moon,
-  Sun,
+  Award,
   X,
   FileText,
   RotateCcw,
