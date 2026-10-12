@@ -7,6 +7,7 @@ import { HeaderStats } from './components/layout/HeaderStats';
 import { BentoSidebar } from './components/layout/BentoSidebar';
 import { LevelSelector } from './components/common/LevelSelector';
 import { BackupModal } from './components/common/BackupModal';
+import { CommandPalette } from './components/common/CommandPalette';
 
 // Mascots & Brand
 import { OrcaMascot, OrcaMood } from './assets/mascots/OrcaMascot';
@@ -57,10 +58,24 @@ export function App() {
   });
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isPhoneticRulesOpen, setIsPhoneticRulesOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [selectedReadingId, setSelectedReadingId] = useState<string | undefined>(undefined);
   const [kanjiSearch, setKanjiSearch] = useState('');
   const [kanjiSubView, setKanjiSubView] = useState<'cards' | 'quiz'>('cards');
   const [grammarSubView, setGrammarSubView] = useState<'all' | 'nuance' | 'verbs' | 'sov'>('all');
   const [kanaSubView, setKanaSubView] = useState<'grid' | 'game'>('grid');
+
+  // Global keyboard shortcut for Command Palette (Ctrl+K / Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // IndexedDB data synchronization engine
   const { isLoading: isSyncing, progress: syncProgress, syncStatus } = useDatabaseSync();
@@ -159,6 +174,7 @@ export function App() {
         isDark={isDark}
         onToggleTheme={() => setIsDark(prev => !prev)}
         onOpenBackup={() => setIsBackupOpen(true)}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         isSyncing={isSyncing}
         syncProgress={syncProgress}
       />
@@ -420,7 +436,7 @@ export function App() {
         {/* ================= TAB 4: TRÌNH ĐỌC HIỂU DOKKAI ================= */}
         {activeTab === 'dokkai' && (
           <div className="animate-fade-in">
-            <DokkaiReader readings={DOKKAI_READINGS} />
+            <DokkaiReader readings={DOKKAI_READINGS} initialReadingId={selectedReadingId} />
           </div>
         )}
 
@@ -476,6 +492,29 @@ export function App() {
       <PhoneticRulesModal
         isOpen={isPhoneticRulesOpen}
         onClose={() => setIsPhoneticRulesOpen(false)}
+      />
+
+      {/* Global Command Palette Spotlight (Ctrl+K) */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onNavigateTab={(tab) => setActiveTab(tab)}
+        onSelectLevel={(lvl) => handleSelectLevel(lvl)}
+        onOpenPhoneticRules={() => setIsPhoneticRulesOpen(true)}
+        onOpenBackup={() => setIsBackupOpen(true)}
+        onToggleTheme={() => setIsDark(prev => !prev)}
+        onSelectGrammarSubView={(sub) => setGrammarSubView(sub)}
+        onSelectKanjiSearch={(q) => {
+          setKanjiSearch(q);
+          setKanjiSubView('cards');
+        }}
+        onSelectReading={(rId) => {
+          setSelectedReadingId(rId);
+        }}
+        allKanji={[...N5_KANJI, ...N4_KANJI, ...N3_KANJI]}
+        allGrammar={[...N5_GRAMMAR, ...N4_GRAMMAR, ...N3_GRAMMAR]}
+        allReadings={DOKKAI_READINGS}
+        allCards={cards}
       />
     </div>
   );

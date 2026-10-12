@@ -79,11 +79,14 @@ export interface WordLookup {
   type: string;
 }
 
+export type DokkaiMondaiType = 'short' | 'medium' | 'info_search';
+
 export interface ReadingItem {
   id: string;
   level: 'N4' | 'N3';
   title: string;
   topic: string;
+  mondaiType?: DokkaiMondaiType; // 'short' (Mondai 10 - Đoạn ngắn), 'medium' (Mondai 11 - Đoạn trung), 'info_search' (Mondai 12 - Tìm kiếm thông tin)
   content: string; // Annotated with ruby or word tokens
   furiganaMap: { [word: string]: string };
   glossary: WordLookup[];

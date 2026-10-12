@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2026-10-12T00:01:41.503Z",
+  "generatedAt": "2026-10-12T00:09:48.018Z",
   "chunks": {
     "kana.json": {
       "count": 126,
@@ -43,8 +43,8 @@
       "size": 2446
     },
     "n3_readings.json": {
-      "count": 3,
-      "size": 10919
+      "count": 6,
+      "size": 23471
     },
     "phonetic_rules.json": {
       "count": 21,

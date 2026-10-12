@@ -1,13 +1,14 @@
 import React from 'react';
 import { Logo } from '../branding/Logo';
 import { UserStats } from '../../types';
-import { Flame, Moon, Sun, Database, RefreshCw } from 'lucide-react';
+import { Flame, Moon, Sun, Database, RefreshCw, Search } from 'lucide-react';
 
 interface HeaderStatsProps {
   stats: UserStats | null;
   isDark: boolean;
   onToggleTheme: () => void;
   onOpenBackup: () => void;
+  onOpenCommandPalette?: () => void;
   isSyncing?: boolean;
   syncProgress?: number;
 }
@@ -17,6 +18,7 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
   isDark,
   onToggleTheme,
   onOpenBackup,
+  onOpenCommandPalette,
   isSyncing,
   syncProgress,
 }) => {
@@ -28,6 +30,21 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
 
         {/* Right Action Icons & Streak */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Global Command Palette Spotlight Button */}
+          {onOpenCommandPalette && (
+            <button
+              onClick={onOpenCommandPalette}
+              title="Mở Tìm kiếm toàn cục & Lệnh nhanh (Ctrl + K)"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-medium transition cursor-pointer group"
+            >
+              <Search className="w-3.5 h-3.5 text-cyan-500 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline">Tìm kiếm</span>
+              <kbd className="hidden sm:inline text-[10px] font-mono px-1 py-0.2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded text-slate-500 dark:text-slate-400">
+                Ctrl K
+              </kbd>
+            </button>
+          )}
+
           {/* Daily Streak Counter */}
           <div
             title="Chuỗi ngày học liên tục"
