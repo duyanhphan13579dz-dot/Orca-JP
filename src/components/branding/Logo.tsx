@@ -12,56 +12,28 @@ export const Logo: React.FC<LogoProps> = ({
   className = '',
 }) => {
   const sizeMap = {
-    sm: { icon: 32, text: 'text-lg', subText: 'text-[10px]' },
-    md: { icon: 42, text: 'text-2xl', subText: 'text-xs' },
-    lg: { icon: 56, text: 'text-3xl', subText: 'text-sm' },
+    sm: { icon: 34, text: 'text-lg', subText: 'text-[10px]' },
+    md: { icon: 44, text: 'text-2xl', subText: 'text-xs' },
+    lg: { icon: 58, text: 'text-3xl', subText: 'text-sm' },
   };
 
   const { icon, text, subText } = sizeMap[size];
 
   return (
     <div className={`flex items-center gap-3 select-none ${className}`}>
-      {/* Orca "O" Icon with Hinomaru Rising Sun */}
+      {/* Orca Chibi Mascot Avatar Icon */}
       <div className="relative flex-shrink-0 group cursor-pointer">
-        <svg
-          width={icon}
-          height={icon}
-          viewBox="0 0 100 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="transition-transform duration-300 group-hover:scale-110 drop-shadow-md"
+        <div
+          className="relative overflow-hidden rounded-2xl ring-2 ring-cyan-500/40 dark:ring-cyan-400/40 shadow-sm bg-white p-0.5 group-hover:scale-110 group-hover:rotate-2 transition-all duration-300"
+          style={{ width: `${icon}px`, height: `${icon}px` }}
         >
-          {/* Hinomaru red sun inside the O */}
-          <circle cx="50" cy="50" r="23" fill="#DC2626" opacity="0.9" />
-
-          {/* Stylized Orca Body forming an "O" shape */}
-          <path
-            d="M 50 8 C 73 8 92 27 92 50 C 92 73 73 92 50 92 C 27 92 8 73 8 50 C 8 36 15 23 26 15"
-            stroke="#0F172A"
-            strokeWidth="13"
-            strokeLinecap="round"
+          <img
+            src="./orca-mascot.png"
+            alt="Orca JP Mascot"
+            className="w-full h-full object-contain select-none"
+            loading="eager"
           />
-
-          {/* Ocean Cyan Wave highlight on Orca back */}
-          <path
-            d="M 28 14 C 40 9 60 9 74 15 C 86 21 92 33 92 48"
-            stroke="#06B6D4"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-
-          {/* Orca Dorsal fin breaking the ring */}
-          <path
-            d="M 75 14 Q 85 -2 93 4 Q 87 14 83 20 Z"
-            fill="#0F172A"
-          />
-
-          {/* Eye spot patch */}
-          <ellipse cx="26" cy="38" rx="6" ry="3.5" fill="#FFFFFF" transform="rotate(-30 26 38)" />
-
-          {/* Subtle water splash dot */}
-          <circle cx="88" cy="2" r="2.5" fill="#38BDF8" />
-        </svg>
+        </div>
       </div>
 
       <div className="flex flex-col">

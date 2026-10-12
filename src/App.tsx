@@ -9,6 +9,7 @@ import { LevelSelector } from './components/common/LevelSelector';
 import { BackupModal } from './components/common/BackupModal';
 import { CommandPalette } from './components/common/CommandPalette';
 import { PWAInstallBanner } from './components/common/PWAInstallBanner';
+import { FloatingMascot } from './components/common/FloatingMascot';
 
 // Mascots & Brand
 import { OrcaMascot, OrcaMood } from './assets/mascots/OrcaMascot';
@@ -520,6 +521,9 @@ export function App() {
 
       {/* PWA Install Banner */}
       <PWAInstallBanner />
+
+      {/* Floating Mini Mascot Assistant */}
+      <FloatingMascot />
     </div>
   );
 }
