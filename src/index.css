@@ -48,9 +48,22 @@
     flex-direction: column;
   }
 
+  button, a, input, select {
+    touch-action: manipulation;
+  }
+
   .font-jp {
     font-family: 'Noto Sans JP', sans-serif;
   }
+}
+
+/* Hide scrollbar for clean horizontal tab scrolling on mobile */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom Scrollbar */

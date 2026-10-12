@@ -52,15 +52,15 @@ export const LevelSelector: React.FC<LevelSelectorProps> = ({
           <button
             key={lvl.id}
             onClick={() => onSelectLevel(lvl.id)}
-            className={`flex-1 relative flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+            className={`flex-1 relative flex items-center justify-center gap-1.5 sm:gap-2 py-1.5 sm:py-2 px-1 sm:px-3 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
               isActive
                 ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-md shadow-cyan-500/10 border border-slate-200/80 dark:border-slate-700'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-slate-800/40'
             }`}
           >
             <div
-              className={`w-6 h-6 rounded-lg flex items-center justify-center transition-transform ${
-                isActive ? `bg-gradient-to-tr ${lvl.color} text-white scale-110 shadow-sm` : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
+              className={`w-5 h-5 sm:w-6 sm:h-6 rounded-lg flex items-center justify-center transition-transform ${
+                isActive ? `bg-gradient-to-tr ${lvl.color} text-white scale-105 sm:scale-110 shadow-sm` : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
               }`}
             >
               {lvl.icon}

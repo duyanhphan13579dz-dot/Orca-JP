@@ -205,7 +205,7 @@ export function App() {
       />
 
       {/* Main Content Wrap */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
         {/* Level Switcher Hero Bar */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <LevelSelector
@@ -275,34 +275,34 @@ export function App() {
         {activeTab === 'kanji' && (
           <div className="space-y-6 animate-fade-in">
             {/* Top Toolbar */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 touch-pan-x">
                 <button
                   onClick={() => setKanjiSubView('cards')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  className={`flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                     kanjiSubView === 'cards'
                       ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
                       : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  Danh sách Thẻ chữ Hán ({activeKanjiList.length})
+                  Danh sách Thẻ ({activeKanjiList.length})
                 </button>
                 <button
                   onClick={() => setKanjiSubView('quiz')}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  className={`flex-shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
                     kanjiSubView === 'quiz'
                       ? 'bg-cyan-500 text-white shadow-md shadow-cyan-500/20'
                       : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  Đố vui Từ ghép Jukugo
+                  Đố vui Jukugo
                 </button>
                 <button
                   onClick={() => setIsPhoneticRulesOpen(true)}
-                  className="px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 hover:from-cyan-500/20 hover:to-indigo-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
+                  className="flex-shrink-0 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 hover:from-cyan-500/20 hover:to-indigo-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  40+ Quy tắc Chuyển âm
+                  40+ Chuyển âm
                 </button>
               </div>
 
@@ -356,10 +356,10 @@ export function App() {
         {activeTab === 'grammar' && (
           <div className="space-y-6 animate-fade-in">
             {/* Sub-view navigation */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-1 sm:pb-0 sm:flex-wrap">
               <button
                 onClick={() => setGrammarSubView('all')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex-shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                   grammarSubView === 'all'
                     ? 'bg-cyan-500 text-white shadow-sm'
                     : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
@@ -370,7 +370,7 @@ export function App() {
 
               <button
                 onClick={() => setGrammarSubView('nuance')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                className={`flex-shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
                   grammarSubView === 'nuance'
                     ? 'bg-indigo-600 text-white shadow-sm'
                     : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
@@ -382,26 +382,26 @@ export function App() {
 
               <button
                 onClick={() => setGrammarSubView('verbs')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                className={`flex-shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
                   grammarSubView === 'verbs'
                     ? 'bg-cyan-500 text-white shadow-sm'
                     : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
-                Ma Trận 10 Thể Động Từ (N5 - N3)
+                Ma Trận 10 Thể Động Từ
               </button>
 
               {currentLevel === 'N5' && (
                 <button
                   onClick={() => setGrammarSubView('sov')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  className={`flex-shrink-0 whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                     grammarSubView === 'sov'
                       ? 'bg-cyan-500 text-white shadow-sm'
                       : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300'
                   }`}
                 >
-                  Thực hành Ghép câu SOV
+                  Ghép câu SOV
                 </button>
               )}
             </div>

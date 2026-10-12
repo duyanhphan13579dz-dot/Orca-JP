@@ -48,14 +48,14 @@ export const BentoSidebar: React.FC<BentoSidebarProps> = ({
   ];
 
   return (
-    <nav className="flex items-center gap-1.5 p-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-x-auto no-scrollbar">
+    <nav className="flex items-center gap-1.5 p-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-x-auto no-scrollbar touch-pan-x scroll-smooth">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
         return (
           <button
             key={tab.id}
             onClick={() => onSelectTab(tab.id)}
-            className={`flex items-center gap-2 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition cursor-pointer relative ${
+            className={`flex-shrink-0 flex items-center gap-2 py-2 px-3 sm:px-3.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition cursor-pointer relative ${
               isActive
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-md shadow-cyan-500/20'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
