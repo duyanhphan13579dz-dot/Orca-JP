@@ -3,12 +3,13 @@ import { KanaItem } from '../../types';
 import { HIRAGANA_DATA, KATAKANA_DATA, DAKUON_DATA, YOON_DATA } from '../../data/kanaData';
 import { StrokePlayer } from './StrokePlayer';
 import { useSpeech } from '../../hooks/useSpeech';
-import { Search, X, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, Volume2, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 
 export const KanaGrid: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'hiragana' | 'katakana' | 'dakuon' | 'yoon'>('hiragana');
   const [selectedKana, setSelectedKana] = useState<KanaItem>(HIRAGANA_DATA[0]);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { speak } = useSpeech();
 
@@ -37,7 +38,7 @@ export const KanaGrid: React.FC = () => {
   const handleSelectKana = (item: KanaItem) => {
     setSelectedKana(item);
     speak(item.char, 'Zero');
-    setIsDetailModalOpen(true);
+    setIsDetailOpen(true);
   };
 
   const handlePrevKana = useCallback(() => {
@@ -58,10 +59,10 @@ export const KanaGrid: React.FC = () => {
 
   // Keyboard navigation on PC (Left/Right arrows to browse, Esc to close)
   useEffect(() => {
-    if (!isDetailModalOpen) return;
+    if (!isDetailOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setIsDetailModalOpen(false);
+        setIsDetailOpen(false);
       } else if (e.key === 'ArrowLeft') {
         handlePrevKana();
       } else if (e.key === 'ArrowRight') {
@@ -70,10 +71,10 @@ export const KanaGrid: React.FC = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isDetailModalOpen, handlePrevKana, handleNextKana]);
+  }, [isDetailOpen, handlePrevKana, handleNextKana]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       {/* Category Pills & Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
         <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-x-auto no-scrollbar touch-pan-x flex-nowrap">
@@ -123,8 +124,8 @@ export const KanaGrid: React.FC = () => {
               key={item.id}
               onClick={() => handleSelectKana(item)}
               className={`relative p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 cursor-pointer group border active:scale-95 ${
-                isSelected && isDetailModalOpen
-                  ? 'bg-gradient-to-b from-cyan-500/15 to-blue-500/15 border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
+                isSelected && isDetailOpen
+                  ? 'bg-gradient-to-b from-cyan-500/20 to-blue-500/20 border-cyan-500 shadow-md ring-2 ring-cyan-500 scale-102 z-10'
                   : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 hover:border-cyan-400/60 hover:shadow-sm hover:scale-102'
               }`}
             >
@@ -142,98 +143,151 @@ export const KanaGrid: React.FC = () => {
         })}
       </div>
 
-      {/* Unified Floating Centered Detail Modal (Active for both Mobile and PC) */}
-      {isDetailModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm p-3 sm:p-4 animate-fade-in"
-          onClick={() => setIsDetailModalOpen(false)}
+      {/* Non-blocking, Highly Flexible Floating Inspector Widget */}
+      {isDetailOpen && (
+        <aside
+          aria-label="Khối nổi chi tiết âm tiết"
+          className={`fixed z-40 transition-all duration-300 ${
+            isMinimized
+              ? 'bottom-4 left-3 sm:left-auto sm:right-20 animate-scale-up'
+              : 'bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 sm:w-[430px] animate-slide-up'
+          }`}
         >
-          <div
-            className="w-full max-w-sm sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl animate-scale-up max-h-[90vh] overflow-y-auto space-y-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <span className="font-jp text-3xl font-black text-cyan-600 dark:text-cyan-400">
-                  {selectedKana.char}
-                </span>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-                    /{selectedKana.romaji}/
-                  </span>
-                  <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-semibold">
-                    {selectedKana.strokes} nét viết
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5">
-                {/* Previous & Next Navigation with Tooltips */}
-                <button
-                  onClick={handlePrevKana}
-                  disabled={currentIndex <= 0}
-                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
-                  title="Âm trước (Phím mũi tên trái ←)"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={handleNextKana}
-                  disabled={currentIndex >= filteredKana.length - 1}
-                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
-                  title="Âm sau (Phím mũi tên phải →)"
-                >
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-                {/* Close Button */}
-                <button
-                  onClick={() => setIsDetailModalOpen(false)}
-                  className="p-1.5 ml-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 transition cursor-pointer"
-                  title="Đóng bảng chi tiết (Phím Esc)"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {/* Stroke Player component with Guide and Virtual Canvas Drawing */}
-            <StrokePlayer
-              char={selectedKana.char}
-              romaji={selectedKana.romaji}
-              strokes={selectedKana.strokes}
-              strokeSvgPath={selectedKana.strokeSvgPath}
-              mnemonicVi={selectedKana.mnemonicVi}
-            />
-
-            {/* Example Word Mini Card */}
-            <div className="p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                Từ vựng ứng dụng
+          {isMinimized ? (
+            /* Minimized Sleek Pill Widget */
+            <div className="flex items-center gap-2 p-2 px-3.5 bg-white/95 dark:bg-slate-900/95 border border-cyan-500/50 rounded-2xl shadow-2xl backdrop-blur-md">
+              <span className="font-jp text-2xl font-black text-cyan-600 dark:text-cyan-400">
+                {selectedKana.char}
               </span>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-jp text-lg font-bold text-slate-900 dark:text-white">
-                    {selectedKana.exampleWord}
-                  </div>
-                  <div className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold">
-                    {selectedKana.exampleReading}
-                  </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-                    Nghĩa: <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedKana.exampleMeaning}</span>
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-none">
+                  /{selectedKana.romaji}/
+                </span>
+                <span className="text-[9px] text-slate-400">
+                  {selectedKana.strokes} nét
+                </span>
+              </div>
+
+              <div className="h-4 w-[1px] bg-slate-200 dark:border-slate-700 mx-1" />
+
+              <button
+                onClick={() => speak(selectedKana.char, 'Zero')}
+                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition cursor-pointer"
+                title="Phát âm"
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setIsMinimized(false)}
+                className="p-1.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 transition cursor-pointer"
+                title="Mở rộng chi tiết"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => setIsDetailOpen(false)}
+                className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-600 transition cursor-pointer"
+                title="Đóng khối nổi"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ) : (
+            /* Full Floating Inspector Card (Floats over the background without locking it!) */
+            <div className="w-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-md max-h-[75vh] sm:max-h-[82vh] overflow-y-auto space-y-3 ring-1 ring-cyan-500/30">
+              {/* Header with quick actions */}
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <span className="font-jp text-3xl font-black text-cyan-600 dark:text-cyan-400">
+                    {selectedKana.char}
+                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                      /{selectedKana.romaji}/
+                    </span>
+                    <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-semibold">
+                      {selectedKana.strokes} nét viết
+                    </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => speak(selectedKana.exampleWord, 'Zero')}
-                  className="w-9 h-9 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center transition cursor-pointer"
-                  title="Nghe phát âm từ vựng"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </button>
+
+                <div className="flex items-center gap-1">
+                  {/* Previous & Next Navigation */}
+                  <button
+                    onClick={handlePrevKana}
+                    disabled={currentIndex <= 0}
+                    className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                    title="Âm trước (←)"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleNextKana}
+                    disabled={currentIndex >= filteredKana.length - 1}
+                    className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                    title="Âm sau (→)"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  {/* Minimize button */}
+                  <button
+                    onClick={() => setIsMinimized(true)}
+                    className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 transition cursor-pointer"
+                    title="Thu nhỏ thành thanh nổi"
+                  >
+                    <Minimize2 className="w-4 h-4" />
+                  </button>
+
+                  {/* Close button */}
+                  <button
+                    onClick={() => setIsDetailOpen(false)}
+                    className="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 transition cursor-pointer"
+                    title="Đóng khối nổi (Esc)"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Stroke Player component with Guide and Virtual Canvas Drawing */}
+              <StrokePlayer
+                char={selectedKana.char}
+                romaji={selectedKana.romaji}
+                strokes={selectedKana.strokes}
+                strokeSvgPath={selectedKana.strokeSvgPath}
+                mnemonicVi={selectedKana.mnemonicVi}
+              />
+
+              {/* Example Word Mini Card */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                  Từ vựng ứng dụng
+                </span>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-jp text-lg font-bold text-slate-900 dark:text-white">
+                      {selectedKana.exampleWord}
+                    </div>
+                    <div className="text-xs text-cyan-600 dark:text-cyan-400 font-semibold">
+                      {selectedKana.exampleReading}
+                    </div>
+                    <div className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
+                      Nghĩa: <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedKana.exampleMeaning}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => speak(selectedKana.exampleWord, 'Zero')}
+                    className="w-9 h-9 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center transition cursor-pointer"
+                    title="Nghe phát âm từ vựng"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </aside>
       )}
     </div>
   );
