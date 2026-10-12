@@ -1,15 +1,30 @@
 <!doctype html>
-<html lang="vi">
+<html lang="vi" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>O-Shachi - Chinh phục tiếng Nhật Zero đến N3</title>
     
+    <!-- Sync Theme immediately to prevent flash & ensure laptop/tablet/mobile consistency -->
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('orca_theme');
+          if (t === 'light') {
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+            if (!t) localStorage.setItem('orca_theme', 'dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- PWA & Mobile Icons -->
     <link rel="icon" type="image/png" href="./orca-mascot.png" />
     <link rel="apple-touch-icon" href="./orca-mascot.png" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <meta name="theme-color" content="#06B6D4" />
+    <meta name="theme-color" content="#0B0F19" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="O-Shachi" />

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { PHONETIC_RULES, PhoneticRule } from '../../data/phoneticRules';
+import { PHONETIC_RULES } from '../../data/phoneticRules';
 import { AudioButton } from '../common/AudioButton';
-import { Sparkles, X, Search, Zap, BookOpen } from 'lucide-react';
+import { Sparkles, X, Search } from 'lucide-react';
 
 interface PhoneticRulesModalProps {
   isOpen: boolean;

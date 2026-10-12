@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Play, RotateCcw, Volume2, Sparkles, PenTool, ArrowRight, Lightbulb, Compass, CheckCircle2 } from 'lucide-react';
+import { Play, RotateCcw, Volume2, Sparkles, PenTool, ArrowRight, Lightbulb, Compass } from 'lucide-react';
 import { useSpeech } from '../../hooks/useSpeech';
 import { VirtualCanvas } from '../kanji/VirtualCanvas';
 import { getStrokeGuide } from '../../data/kanaStrokeGuides';

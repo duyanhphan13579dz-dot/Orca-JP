@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { DailyStreakRecord } from '../../types';
-import { dataLoader } from '../../db/dataLoader';
-import { Flame, Calendar, Sparkles, TrendingUp, HelpCircle } from 'lucide-react';
+import { dbInstance } from '../../db/indexdb';
+import { Flame, Calendar, TrendingUp } from 'lucide-react';
 
 interface StudyHeatmapProps {
   initialStreaks?: DailyStreakRecord[];
@@ -22,7 +22,7 @@ export const StudyHeatmap: React.FC<StudyHeatmapProps> = ({ currentStreak = 1 })
   // Fetch daily study streaks from IndexedDB
   useEffect(() => {
     let isMounted = true;
-    dataLoader.getDailyStreaks(365).then((data) => {
+    dbInstance.getDailyStreaks(365).then((data: DailyStreakRecord[]) => {
       if (isMounted) setStreaks(data);
     });
     return () => {
@@ -40,7 +40,7 @@ export const StudyHeatmap: React.FC<StudyHeatmapProps> = ({ currentStreak = 1 })
   }, [streaks]);
 
   // Generate 52 weeks ending today
-  const { weeks, totalReviewsYear, activeDaysCount, maxReviewsInDay } = useMemo(() => {
+  const { weeks, totalReviewsYear } = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -57,16 +57,12 @@ export const StudyHeatmap: React.FC<StudyHeatmapProps> = ({ currentStreak = 1 })
     const generatedWeeks: DayCell[][] = [];
     let currentWeek: DayCell[] = [];
     let totalReviews = 0;
-    let activeDays = 0;
-    let maxReviews = 0;
 
     const curr = new Date(startDate);
     while (curr <= today || currentWeek.length > 0) {
       const dateStr = curr.toISOString().slice(0, 10);
       const reviews = streaksMap.get(dateStr) || 0;
       totalReviews += reviews;
-      if (reviews > 0) activeDays++;
-      if (reviews > maxReviews) maxReviews = reviews;
 
       const cell: DayCell = {
         dateStr,
@@ -97,8 +93,6 @@ export const StudyHeatmap: React.FC<StudyHeatmapProps> = ({ currentStreak = 1 })
     return {
       weeks: generatedWeeks,
       totalReviewsYear: totalReviews,
-      activeDaysCount: activeDays,
-      maxReviewsInDay: maxReviews,
     };
   }, [streaksMap]);
 

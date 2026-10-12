@@ -53,8 +53,9 @@ export function App() {
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('orca_theme');
-      if (saved) return saved === 'dark';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved !== null) return saved === 'dark';
+      // Mặc định đồng bộ nền tối Cyber-Ocean cao cấp cho mọi thiết bị (Laptop, Tablet, Mobile, PC)
+      return true;
     }
     return true;
   });
@@ -102,16 +103,30 @@ export function App() {
   // IndexedDB SRS hook
   const { cards, stats, reloadData, reviewCard, undoLastReview, canUndo, getDueCards, seedDefaultCards } = useSRSIndexedDB();
 
-  // Dark mode class sync
+  // Dark mode class sync & cross-tab synchronization
   useEffect(() => {
     if (isDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('orca_theme', 'dark');
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', '#0B0F19');
     } else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('orca_theme', 'light');
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', '#06B6D4');
     }
   }, [isDark]);
+
+  useEffect(() => {
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'orca_theme') {
+        setIsDark(e.newValue !== 'light');
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   // Seed default SRS cards on first run
   useEffect(() => {

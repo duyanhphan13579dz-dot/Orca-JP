@@ -6,7 +6,6 @@ import { OrcaMascot } from '../../assets/mascots/OrcaMascot';
 import { LevelBadge } from '../common/LevelBadge';
 import { AudioButton } from '../common/AudioButton';
 import {
-  Eye,
   BookOpen,
   CheckCircle2,
   XCircle,

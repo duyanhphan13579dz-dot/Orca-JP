@@ -3,7 +3,7 @@ import { KanaItem } from '../../types';
 import { HIRAGANA_DATA, KATAKANA_DATA, DAKUON_DATA, YOON_DATA } from '../../data/kanaData';
 import { StrokePlayer } from './StrokePlayer';
 import { useSpeech } from '../../hooks/useSpeech';
-import { Search, X, ChevronLeft, ChevronRight, Volume2, Minimize2, Maximize2, Sparkles } from 'lucide-react';
+import { Search, X, ChevronLeft, ChevronRight, Volume2, Minimize2, Maximize2 } from 'lucide-react';
 
 export const KanaGrid: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'hiragana' | 'katakana' | 'dakuon' | 'yoon'>('hiragana');
@@ -39,6 +39,7 @@ export const KanaGrid: React.FC = () => {
     setSelectedKana(item);
     speak(item.char, 'Zero');
     setIsDetailOpen(true);
+    setIsMinimized(false);
   };
 
   const handlePrevKana = useCallback(() => {
@@ -149,13 +150,13 @@ export const KanaGrid: React.FC = () => {
           aria-label="Khối nổi chi tiết âm tiết"
           className={`fixed z-40 transition-all duration-300 ${
             isMinimized
-              ? 'bottom-4 left-3 sm:left-auto sm:right-20 animate-scale-up'
-              : 'bottom-3 left-3 right-3 sm:left-auto sm:right-6 sm:bottom-6 sm:w-[430px] animate-slide-up'
+              ? 'bottom-4 left-3 sm:left-auto sm:right-6 md:right-8 animate-scale-up'
+              : 'bottom-3 left-3 right-3 sm:left-auto sm:right-6 md:right-8 sm:bottom-6 sm:w-[430px] md:w-[450px] animate-slide-up'
           }`}
         >
           {isMinimized ? (
             /* Minimized Sleek Pill Widget */
-            <div className="flex items-center gap-2 p-2 px-3.5 bg-white/95 dark:bg-slate-900/95 border border-cyan-500/50 rounded-2xl shadow-2xl backdrop-blur-md">
+            <div className="flex items-center gap-2 p-2 px-3.5 bg-white/95 dark:bg-[#111827]/95 border border-cyan-500/50 rounded-2xl shadow-2xl shadow-black/20 dark:shadow-cyan-950/50 backdrop-blur-xl">
               <span className="font-jp text-2xl font-black text-cyan-600 dark:text-cyan-400">
                 {selectedKana.char}
               </span>
@@ -194,7 +195,7 @@ export const KanaGrid: React.FC = () => {
             </div>
           ) : (
             /* Full Floating Inspector Card (Floats over the background without locking it!) */
-            <div className="w-full bg-white/95 dark:bg-slate-900/95 border border-slate-200/90 dark:border-slate-800/90 rounded-3xl p-3.5 sm:p-4 shadow-2xl backdrop-blur-md max-h-[75vh] sm:max-h-[82vh] overflow-y-auto space-y-3 ring-1 ring-cyan-500/30">
+            <div className="w-full bg-white/95 dark:bg-[#111827]/95 border border-slate-200/90 dark:border-slate-800/90 rounded-3xl p-3.5 sm:p-4 shadow-2xl shadow-black/20 dark:shadow-cyan-950/50 backdrop-blur-xl max-h-[78vh] sm:max-h-[82vh] overflow-y-auto space-y-3 ring-1 ring-cyan-500/40">
               {/* Header with quick actions */}
               <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">

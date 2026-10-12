@@ -3,7 +3,7 @@ import { GrammarItem, JLPTLevel } from '../../types';
 import { NUANCE_PAIRS, NuanceDuel } from '../../data/nuancePairs';
 import { AudioButton } from '../common/AudioButton';
 import { LevelBadge } from '../common/LevelBadge';
-import { Scale, Zap, Check, Sparkles, BrainCircuit, AlertTriangle, Search } from 'lucide-react';
+import { Scale, BrainCircuit, AlertTriangle, Search } from 'lucide-react';
 
 interface NuanceComparatorProps {
   grammarList?: GrammarItem[];

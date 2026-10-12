@@ -1,5 +1,5 @@
 import { dbInstance } from './indexdb';
-import { DatabaseSyncStatus, KanjiItem, GrammarItem, KanaItem, ReadingItem, SRSCard, JLPTLevel } from '../types';
+import { DatabaseSyncStatus, KanjiItem, GrammarItem, KanaItem, ReadingItem, JLPTLevel } from '../types';
 
 // Fallback static imports in case fetch/worker is restricted (e.g., file:// protocol or offline launch)
 import { HIRAGANA_DATA, KATAKANA_DATA, DAKUON_DATA, YOON_DATA } from '../data/kanaData';

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { JLPTLevel, SRSCard } from '../../types';
+import { SRSCard } from '../../types';
 import confetti from 'canvas-confetti';
-import { Award, Target, CheckCircle2, AlertCircle, Sparkles, BookOpen, Layers, Zap } from 'lucide-react';
+import { Award, Target, Sparkles, BookOpen, Layers } from 'lucide-react';
 import { OrcaMascot } from '../../assets/mascots/OrcaMascot';
 
 interface JLPTReadinessCardProps {
