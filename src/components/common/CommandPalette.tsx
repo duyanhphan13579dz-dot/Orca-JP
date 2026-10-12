@@ -23,6 +23,7 @@ export interface CommandPaletteProps {
   onSelectLevel: (level: JLPTLevel) => void;
   onOpenPhoneticRules: () => void;
   onOpenBackup: () => void;
+  onOpenProfileSettings?: () => void;
   onToggleTheme: () => void;
   onSelectGrammarSubView?: (subView: 'all' | 'nuance' | 'verbs' | 'sov') => void;
   onSelectKanjiSearch?: (query: string) => void;
@@ -61,6 +62,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   onSelectLevel,
   onOpenPhoneticRules,
   onOpenBackup,
+  onOpenProfileSettings,
   onToggleTheme,
   onSelectGrammarSubView,
   onSelectKanjiSearch,
@@ -206,6 +208,18 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       badge: 'Cấp độ',
       badgeColor: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
       action: () => onSelectLevel('N3'),
+    },
+    {
+      id: 'cmd-profile',
+      category: 'Lệnh nhanh',
+      icon: <Command className="w-4 h-4 text-cyan-500" />,
+      title: 'Hồ sơ Cá nhân & Cài đặt Đồng bộ (Profile & Sync)',
+      subtitle: '> profile • Xem tài khoản, trạng thái Online/Offline và đồng bộ Cloud',
+      badge: 'Hồ sơ',
+      badgeColor: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20',
+      action: () => {
+        if (onOpenProfileSettings) onOpenProfileSettings();
+      },
     },
     {
       id: 'cmd-backup',

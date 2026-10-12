@@ -11,6 +11,7 @@ import { CommandPalette } from './components/common/CommandPalette';
 import { PWAInstallBanner } from './components/common/PWAInstallBanner';
 import { FloatingMascot } from './components/common/FloatingMascot';
 import { AuthModal } from './components/auth/AuthModal';
+import { ProfileSettingsModal } from './components/profile/ProfileSettingsModal';
 
 // Mascots & Brand
 import { OrcaMascot, OrcaMood } from './assets/mascots/OrcaMascot';
@@ -62,6 +63,7 @@ export function App() {
   });
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isProfileSettingsOpen, setIsProfileSettingsOpen] = useState(false);
   const [isPhoneticRulesOpen, setIsPhoneticRulesOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [selectedReadingId, setSelectedReadingId] = useState<string | undefined>(undefined);
@@ -218,6 +220,7 @@ export function App() {
         onOpenBackup={() => setIsBackupOpen(true)}
         onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
         onOpenAuthModal={() => setIsAuthOpen(true)}
+        onOpenProfileSettings={() => setIsProfileSettingsOpen(true)}
         isSyncing={isSyncing}
         syncProgress={syncProgress}
       />
@@ -560,6 +563,18 @@ export function App() {
         onClose={() => setIsAuthOpen(false)}
       />
 
+      {/* Profile & Settings Modal (Online / Offline Hybrid) */}
+      <ProfileSettingsModal
+        isOpen={isProfileSettingsOpen}
+        onClose={() => setIsProfileSettingsOpen(false)}
+        onOpenAuthModal={() => setIsAuthOpen(true)}
+        onOpenBackupModal={() => setIsBackupOpen(true)}
+        stats={stats}
+        cardsCount={cards.length}
+        isDark={isDark}
+        onToggleTheme={() => setIsDark(prev => !prev)}
+      />
+
       {/* 40+ Phonetic Rules Modal */}
       <PhoneticRulesModal
         isOpen={isPhoneticRulesOpen}
@@ -574,6 +589,7 @@ export function App() {
         onSelectLevel={(lvl) => handleSelectLevel(lvl)}
         onOpenPhoneticRules={() => setIsPhoneticRulesOpen(true)}
         onOpenBackup={() => setIsBackupOpen(true)}
+        onOpenProfileSettings={() => setIsProfileSettingsOpen(true)}
         onToggleTheme={() => setIsDark(prev => !prev)}
         onSelectGrammarSubView={(sub) => setGrammarSubView(sub)}
         onSelectKanjiSearch={(q) => {

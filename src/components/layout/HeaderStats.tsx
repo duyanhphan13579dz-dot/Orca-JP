@@ -11,6 +11,7 @@ interface HeaderStatsProps {
   onOpenBackup: () => void;
   onOpenCommandPalette?: () => void;
   onOpenAuthModal?: () => void;
+  onOpenProfileSettings?: () => void;
   isSyncing?: boolean;
   syncProgress?: number;
 }
@@ -22,6 +23,7 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
   onOpenBackup,
   onOpenCommandPalette,
   onOpenAuthModal,
+  onOpenProfileSettings,
   isSyncing,
   syncProgress,
 }) => {
@@ -87,7 +89,12 @@ export const HeaderStats: React.FC<HeaderStatsProps> = ({
           </button>
 
           {/* User Profile / Auth Button */}
-          {onOpenAuthModal && <UserMenu onOpenAuthModal={onOpenAuthModal} />}
+          {onOpenAuthModal && (
+            <UserMenu 
+              onOpenAuthModal={onOpenAuthModal}
+              onOpenProfileSettings={onOpenProfileSettings || (() => {})} 
+            />
+          )}
         </div>
       </div>
     </header>
