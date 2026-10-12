@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { KanaItem } from '../../types';
 import { HIRAGANA_DATA, KATAKANA_DATA, DAKUON_DATA, YOON_DATA } from '../../data/kanaData';
 import { StrokePlayer } from './StrokePlayer';
@@ -8,7 +8,7 @@ import { Search, X, ChevronLeft, ChevronRight, Volume2 } from 'lucide-react';
 export const KanaGrid: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'hiragana' | 'katakana' | 'dakuon' | 'yoon'>('hiragana');
   const [selectedKana, setSelectedKana] = useState<KanaItem>(HIRAGANA_DATA[0]);
-  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { speak } = useSpeech();
 
@@ -37,24 +37,40 @@ export const KanaGrid: React.FC = () => {
   const handleSelectKana = (item: KanaItem) => {
     setSelectedKana(item);
     speak(item.char, 'Zero');
-    setIsMobileModalOpen(true);
+    setIsDetailModalOpen(true);
   };
 
-  const handlePrevKana = () => {
+  const handlePrevKana = useCallback(() => {
     if (currentIndex > 0) {
       const prevItem = filteredKana[currentIndex - 1];
       setSelectedKana(prevItem);
       speak(prevItem.char, 'Zero');
     }
-  };
+  }, [currentIndex, filteredKana, speak]);
 
-  const handleNextKana = () => {
+  const handleNextKana = useCallback(() => {
     if (currentIndex < filteredKana.length - 1) {
       const nextItem = filteredKana[currentIndex + 1];
       setSelectedKana(nextItem);
       speak(nextItem.char, 'Zero');
     }
-  };
+  }, [currentIndex, filteredKana, speak]);
+
+  // Keyboard navigation on PC (Left/Right arrows to browse, Esc to close)
+  useEffect(() => {
+    if (!isDetailModalOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsDetailModalOpen(false);
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevKana();
+      } else if (e.key === 'ArrowRight') {
+        handleNextKana();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isDetailModalOpen, handlePrevKana, handleNextKana]);
 
   return (
     <div className="space-y-6">
@@ -98,83 +114,42 @@ export const KanaGrid: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Grid + Sidebar Detail */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Kana Grid Bento */}
-        <div className="lg:col-span-2 grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 gap-2.5 sm:gap-3">
-          {filteredKana.map(item => {
-            const isSelected = selectedKana.id === item.id;
-            return (
-              <div
-                key={item.id}
-                onClick={() => handleSelectKana(item)}
-                className={`relative p-3 sm:p-3.5 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 cursor-pointer group border active:scale-95 ${
-                  isSelected
-                    ? 'bg-gradient-to-b from-cyan-500/10 to-blue-500/10 border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
-                    : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 hover:border-cyan-400/60 hover:shadow-sm'
-                }`}
-              >
-                <div className="font-jp text-3xl font-bold text-slate-800 dark:text-slate-100 group-hover:scale-110 transition-transform">
-                  {item.char}
-                </div>
-                <div className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 mt-1 uppercase">
-                  {item.romaji}
-                </div>
-                <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 line-clamp-1 text-center">
-                  {item.exampleWord}
-                </div>
+      {/* Main Full-Width Bento Grid for PC & Mobile */}
+      <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2.5 sm:gap-3">
+        {filteredKana.map(item => {
+          const isSelected = selectedKana.id === item.id;
+          return (
+            <div
+              key={item.id}
+              onClick={() => handleSelectKana(item)}
+              className={`relative p-3 sm:p-4 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 cursor-pointer group border active:scale-95 ${
+                isSelected && isDetailModalOpen
+                  ? 'bg-gradient-to-b from-cyan-500/15 to-blue-500/15 border-cyan-500 shadow-md ring-2 ring-cyan-500/30'
+                  : 'bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-800 hover:border-cyan-400/60 hover:shadow-sm hover:scale-102'
+              }`}
+            >
+              <div className="font-jp text-3xl sm:text-4xl font-bold text-slate-800 dark:text-slate-100 group-hover:scale-110 transition-transform">
+                {item.char}
               </div>
-            );
-          })}
-        </div>
-
-        {/* Selected Kana Detail & Stroke Player (Desktop sidebar ONLY: hidden on mobile) */}
-        <div className="hidden lg:block lg:col-span-1 space-y-4">
-          <StrokePlayer
-            char={selectedKana.char}
-            romaji={selectedKana.romaji}
-            strokes={selectedKana.strokes}
-            strokeSvgPath={selectedKana.strokeSvgPath}
-            mnemonicVi={selectedKana.mnemonicVi}
-          />
-
-          {/* Example Word Mini Card */}
-          <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
-              Từ vựng ứng dụng
-            </span>
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="font-jp text-xl font-bold text-slate-900 dark:text-white">
-                  {selectedKana.exampleWord}
-                </div>
-                <div className="text-xs text-cyan-600 dark:text-cyan-400 font-medium">
-                  {selectedKana.exampleReading}
-                </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Nghĩa: <span className="font-semibold text-slate-700 dark:text-slate-300">{selectedKana.exampleMeaning}</span>
-                </div>
+              <div className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 mt-1 uppercase">
+                {item.romaji}
               </div>
-              <button
-                onClick={() => speak(selectedKana.exampleWord, 'Zero')}
-                className="w-10 h-10 rounded-2xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center transition cursor-pointer"
-                title="Nghe phát âm từ vựng"
-              >
-                <Volume2 className="w-4 h-4" />
-              </button>
+              <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 line-clamp-1 text-center">
+                {item.exampleWord}
+              </div>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      {/* Mobile Floating Centered Modal for Selected Kana */}
-      {isMobileModalOpen && (
+      {/* Unified Floating Centered Detail Modal (Active for both Mobile and PC) */}
+      {isDetailModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm p-4 animate-fade-in lg:hidden"
-          onClick={() => setIsMobileModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm p-3 sm:p-4 animate-fade-in"
+          onClick={() => setIsDetailModalOpen(false)}
         >
           <div
-            className="w-full max-w-sm sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl animate-scale-up max-h-[88vh] overflow-y-auto space-y-4"
+            className="w-full max-w-sm sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl animate-scale-up max-h-[90vh] overflow-y-auto space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -194,35 +169,35 @@ export const KanaGrid: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-1.5">
-                {/* Previous & Next Navigation */}
+                {/* Previous & Next Navigation with Tooltips */}
                 <button
                   onClick={handlePrevKana}
                   disabled={currentIndex <= 0}
-                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition cursor-pointer"
-                  title="Âm trước"
+                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                  title="Âm trước (Phím mũi tên trái ←)"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleNextKana}
                   disabled={currentIndex >= filteredKana.length - 1}
-                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition cursor-pointer"
-                  title="Âm sau"
+                  className="p-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-cyan-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                  title="Âm sau (Phím mũi tên phải →)"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
                 {/* Close Button */}
                 <button
-                  onClick={() => setIsMobileModalOpen(false)}
+                  onClick={() => setIsDetailModalOpen(false)}
                   className="p-1.5 ml-1 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-300 transition cursor-pointer"
-                  title="Đóng bảng chi tiết"
+                  title="Đóng bảng chi tiết (Phím Esc)"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            {/* Stroke Player component */}
+            {/* Stroke Player component with Guide and Virtual Canvas Drawing */}
             <StrokePlayer
               char={selectedKana.char}
               romaji={selectedKana.romaji}
