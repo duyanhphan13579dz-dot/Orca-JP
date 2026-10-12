@@ -167,14 +167,14 @@ export const KanaGrid: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Floating Bottom Sheet / Modal for Selected Kana */}
+      {/* Mobile Floating Centered Modal for Selected Kana */}
       {isMobileModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-xs p-0 sm:p-4 animate-fade-in lg:hidden"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 backdrop-blur-sm p-4 animate-fade-in lg:hidden"
           onClick={() => setIsMobileModalOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md bg-white dark:bg-slate-900 border-t sm:border border-slate-200 dark:border-slate-800 rounded-t-3xl sm:rounded-3xl p-4 sm:p-5 shadow-2xl animate-slide-up max-h-[90vh] overflow-y-auto space-y-4"
+            className="w-full max-w-sm sm:max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-5 shadow-2xl animate-scale-up max-h-[88vh] overflow-y-auto space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
