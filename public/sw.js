@@ -1,5 +1,5 @@
-// O-Shachi Service Worker (v2.0.0) - Offline-First Engine
-const CACHE_NAME = 'o-shachi-v2.0.0';
+// O-Shachi Service Worker (v2.0.1) - Offline-First Engine
+const CACHE_NAME = 'o-shachi-v2.0.1';
 
 const PRECACHE_ASSETS = [
   './',
