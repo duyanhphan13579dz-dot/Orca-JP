@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { AudioButton } from '../common/AudioButton';
-import { Layers, Sparkles, Search, BookOpen, Volume2 } from 'lucide-react';
+import { Layers, Search } from 'lucide-react';
 
 export interface VerbItem {
   dictionary: string;

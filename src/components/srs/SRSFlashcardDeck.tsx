@@ -6,7 +6,7 @@ import { useSoundEffects } from '../../hooks/useSoundEffects';
 import { LevelBadge } from '../common/LevelBadge';
 import { PitchAccentVisualizer } from '../common/PitchAccentVisualizer';
 import { OrcaMascot } from '../../assets/mascots/OrcaMascot';
-import { Volume2, RotateCw, Sparkles, Brain, Undo2, AlertTriangle, Flame } from 'lucide-react';
+import { Volume2, RotateCw, Sparkles, Brain, Undo2, AlertTriangle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface SRSFlashcardDeckProps {
