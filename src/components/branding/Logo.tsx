@@ -46,7 +46,7 @@ export const Logo: React.FC<LogoProps> = ({
           </span>
         </div>
         {showSlogan && (
-          <span className={`hidden sm:inline text-slate-500 dark:text-slate-400 font-medium ${subText} line-clamp-1`}>
+          <span className={`hidden md:inline text-slate-500 dark:text-slate-400 font-medium ${subText} line-clamp-1`}>
             Chinh phục tiếng Nhật với sức mạnh cá voi sát thủ
           </span>
         )}

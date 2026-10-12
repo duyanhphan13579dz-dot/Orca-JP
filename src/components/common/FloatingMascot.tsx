@@ -23,7 +23,13 @@ export const FloatingMascot: React.FC = () => {
   const currentQuote = MOTIVATIONAL_QUOTES[quoteIndex];
 
   return (
-    <div className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 flex flex-col items-end select-none">
+    <div
+      style={{
+        bottom: 'max(0.85rem, calc(env(safe-area-inset-bottom, 0px) + 0.6rem))',
+        right: 'max(0.75rem, calc(env(safe-area-inset-right, 0px) + 0.6rem))',
+      }}
+      className="fixed z-40 flex flex-col items-end select-none"
+    >
       {/* Speech Bubble Popup */}
       {isOpen && (
         <div
