@@ -218,6 +218,16 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       action: () => onOpenBackup(),
     },
     {
+      id: 'cmd-dashboard',
+      category: 'Lệnh nhanh',
+      icon: <Award className="w-4 h-4 text-purple-500" />,
+      title: 'Thống kê Trí nhớ & Heatmap (Memory Matrix)',
+      subtitle: '> dashboard • Điểm chuẩn JLPT Readiness & 52 tuần Heatmap',
+      badge: 'Tab',
+      badgeColor: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
+      action: () => onNavigateTab('dashboard'),
+    },
+    {
       id: 'cmd-theme',
       category: 'Lệnh nhanh',
       icon: <Moon className="w-4 h-4 text-amber-500" />,

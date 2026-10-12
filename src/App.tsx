@@ -8,6 +8,7 @@ import { BentoSidebar } from './components/layout/BentoSidebar';
 import { LevelSelector } from './components/common/LevelSelector';
 import { BackupModal } from './components/common/BackupModal';
 import { CommandPalette } from './components/common/CommandPalette';
+import { PWAInstallBanner } from './components/common/PWAInstallBanner';
 
 // Mascots & Brand
 import { OrcaMascot, OrcaMood } from './assets/mascots/OrcaMascot';
@@ -516,6 +517,9 @@ export function App() {
         allReadings={DOKKAI_READINGS}
         allCards={cards}
       />
+
+      {/* PWA Install Banner */}
+      <PWAInstallBanner />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import React from 'react';
 import { UserStats, SRSCard } from '../../types';
 import { OrcaMascot } from '../../assets/mascots/OrcaMascot';
-import { Flame, Calendar, Award, Database } from 'lucide-react';
+import { Flame, Calendar, Award, Database, Sparkles, CheckCircle2 } from 'lucide-react';
+import { StudyHeatmap } from './StudyHeatmap';
+import { JLPTReadinessCard } from './JLPTReadinessCard';
 
 interface MemoryMatrixProps {
   stats: UserStats | null;
@@ -36,17 +38,17 @@ export const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ stats, cards }) => {
   return (
     <div className="space-y-6">
       {/* Top Banner with Mascot Celebration */}
-      <div className="p-6 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 border border-cyan-500/20 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="p-6 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 border border-cyan-500/20 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
         <div className="space-y-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-xs font-bold">
             <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
             Chuỗi học liên tục: {stats?.streak || 1} ngày
           </div>
           <h2 className="text-2xl font-black text-slate-900 dark:text-white">
-            Trung tâm Phân tích Trí nhớ SM-2
+            Trung tâm Phân tích Trí nhớ & Gamification
           </h2>
           <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md">
-            Thuật toán SuperMemo-2 tối ưu đường cong lãng quên Ebbinghaus, dự báo chính xác chu kỳ củng cố nơ-ron não bộ.
+            Mô hình hóa đường cong lãng quên Ebbinghaus, tính toán điểm sẵn sàng thi JLPT và trực quan hóa thói quen học tập 365 ngày.
           </p>
         </div>
 
@@ -116,6 +118,12 @@ export const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ stats, cards }) => {
           </div>
         </div>
       </div>
+
+      {/* Gamification Pillar 1: JLPT Readiness Score */}
+      <JLPTReadinessCard cards={cards} />
+
+      {/* Gamification Pillar 2: GitHub-style 52-Week Contribution Heatmap */}
+      <StudyHeatmap currentStreak={stats?.streak || 1} />
 
       {/* Storage and System Health status */}
       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
