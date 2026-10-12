@@ -66,6 +66,7 @@ export function App() {
   const [kanjiSubView, setKanjiSubView] = useState<'cards' | 'quiz'>('cards');
   const [grammarSubView, setGrammarSubView] = useState<'all' | 'nuance' | 'verbs' | 'sov'>('all');
   const [kanaSubView, setKanaSubView] = useState<'grid' | 'game'>('grid');
+  const [isPageTransitioning, setIsPageTransitioning] = useState(false);
 
   // Global keyboard shortcut for Command Palette (Ctrl+K / Cmd+K)
   useEffect(() => {
@@ -118,12 +119,27 @@ export function App() {
     seedDefaultCards(combinedSeed);
   }, [seedDefaultCards]);
 
-  // When level switches to Zero, automatically activate Kana tab
+  // Level change with smooth transition effect
   const handleSelectLevel = (lvl: JLPTLevel) => {
+    if (lvl === currentLevel) return;
+    setIsPageTransitioning(true);
     setCurrentLevel(lvl);
     if (lvl === 'Zero') {
       setActiveTab('kana');
     }
+    setTimeout(() => {
+      setIsPageTransitioning(false);
+    }, 250);
+  };
+
+  // Tab switch with smooth transition effect
+  const handleSelectTab = (tab: MainTab) => {
+    if (tab === activeTab) return;
+    setIsPageTransitioning(true);
+    setActiveTab(tab);
+    setTimeout(() => {
+      setIsPageTransitioning(false);
+    }, 250);
   };
 
   // Due SRS cards for current level
@@ -170,6 +186,13 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 transition-colors selection:bg-cyan-500 selection:text-white">
+      {/* Top Ocean Loading & Transition Bar */}
+      {(isSyncing || isPageTransitioning) && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gradient-to-r from-cyan-400 via-sky-500 to-indigo-500 overflow-hidden shadow-xs shadow-cyan-500/50">
+          <div className="w-full h-full bg-white/40 animate-loading-bar" />
+        </div>
+      )}
+
       {/* Top Header */}
       <HeaderStats
         stats={stats}
@@ -209,12 +232,14 @@ export function App() {
         {/* Tab Navigation Bento Bar */}
         <BentoSidebar
           activeTab={activeTab}
-          onSelectTab={setActiveTab}
+          onSelectTab={handleSelectTab}
           dueCardsCount={dueCards.length}
         />
 
-        {/* ================= TAB 1: KANA (BẢNG CHỮ CÁI & GAME) ================= */}
-        {activeTab === 'kana' && (
+        {/* Dynamic Animated Tab View Container */}
+        <div key={`${activeTab}-${currentLevel}`} className="animate-fade-in space-y-6">
+          {/* ================= TAB 1: KANA (BẢNG CHỮ CÁI & GAME) ================= */}
+          {activeTab === 'kana' && (
           <div className="space-y-6 animate-fade-in">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -296,11 +321,31 @@ export function App() {
             </div>
 
             {kanjiSubView === 'cards' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {activeKanjiList.map(kanji => (
-                  <KanjiCard key={kanji.id} kanji={kanji} />
-                ))}
-              </div>
+              activeKanjiList.length === 0 && isSyncing ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[1, 2, 3, 4, 5, 6].map((idx) => (
+                    <div
+                      key={idx}
+                      className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 animate-shimmer h-60 flex flex-col justify-between"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-2xl bg-cyan-500/10" />
+                        <div className="space-y-2 flex-1">
+                          <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded-md w-3/4" />
+                          <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded-md w-1/2" />
+                        </div>
+                      </div>
+                      <div className="h-12 bg-slate-100 dark:bg-slate-800/60 rounded-xl" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {activeKanjiList.map(kanji => (
+                    <KanjiCard key={kanji.id} kanji={kanji} />
+                  ))}
+                </div>
+              )
             ) : (
               <JukugoExplorer kanjiList={activeKanjiList} />
             )}
@@ -463,6 +508,7 @@ export function App() {
             <MemoryMatrix stats={stats} cards={cards} />
           </div>
         )}
+        </div>
       </main>
 
       {/* Footer Info */}

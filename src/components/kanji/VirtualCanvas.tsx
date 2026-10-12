@@ -14,6 +14,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
   className = '',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const activeTouchIdRef = useRef<number | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showGhostGuide, setShowGhostGuide] = useState(true);
   const [showGrid, setShowGrid] = useState(true);
@@ -24,32 +25,43 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
 
   const { playCorrect } = useSoundEffects();
 
-  const getPos = (e: React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
+  const getPos = useCallback((e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent, canvas: HTMLCanvasElement) => {
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / (rect.width || 1);
+    const scaleY = canvas.height / (rect.height || 1);
+
     if ('touches' in e && e.touches.length > 0) {
+      let touch = e.touches[0];
+      if (activeTouchIdRef.current !== null) {
+        for (let i = 0; i < e.touches.length; i++) {
+          if (e.touches[i].identifier === activeTouchIdRef.current) {
+            touch = e.touches[i];
+            break;
+          }
+        }
+      }
       return {
-        x: e.touches[0].clientX - rect.left,
-        y: e.touches[0].clientY - rect.top,
+        x: (touch.clientX - rect.left) * scaleX,
+        y: (touch.clientY - rect.top) * scaleY,
       };
     }
-    const mouseEvent = e as React.MouseEvent;
+    const mouseEvent = e as MouseEvent | React.MouseEvent;
     return {
-      x: mouseEvent.clientX - rect.left,
-      y: mouseEvent.clientY - rect.top,
+      x: (mouseEvent.clientX - rect.left) * scaleX,
+      y: (mouseEvent.clientY - rect.top) * scaleY,
     };
-  };
+  }, []);
 
-  const saveCanvasState = () => {
+  const saveCanvasState = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const currentState = ctx.getImageData(0, 0, canvas.width, canvas.height);
     setStrokeHistory((prev) => [...prev, currentState]);
-  };
+  }, []);
 
-  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
+  const startDrawingInternal = useCallback((e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -60,11 +72,9 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
     const { x, y } = getPos(e, canvas);
     ctx.beginPath();
     ctx.moveTo(x, y);
-  };
+  }, [getPos, saveCanvasState]);
 
-  const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing) return;
-    e.preventDefault();
+  const drawInternal = useCallback((e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -73,22 +83,76 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
     const { x, y } = getPos(e, canvas);
     ctx.lineTo(x, y);
     ctx.strokeStyle = activeMode === 'guided' ? '#06B6D4' : '#0EA5E9';
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 8;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.stroke();
+  }, [activeMode, getPos]);
+
+  const stopDrawingInternal = useCallback(() => {
+    setIsDrawing((wasDrawing) => {
+      if (wasDrawing) {
+        setUserStrokeCount((prev) => {
+          const next = prev + 1;
+          if (next === strokesCount) {
+            playCorrect();
+          }
+          return next;
+        });
+      }
+      return false;
+    });
+  }, [playCorrect, strokesCount]);
+
+  // Native non-passive touch listeners for 100% rock-solid mobile & tablet drawing without scrolling or jitter
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      if (e.touches.length > 0) {
+        activeTouchIdRef.current = e.touches[0].identifier;
+      }
+      startDrawingInternal(e);
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      drawInternal(e);
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      activeTouchIdRef.current = null;
+      stopDrawingInternal();
+    };
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd, { passive: false });
+    canvas.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+    return () => {
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove', onTouchMove);
+      canvas.removeEventListener('touchend', onTouchEnd);
+      canvas.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [drawInternal, startDrawingInternal, stopDrawingInternal]);
+
+  const startDrawing = (e: React.MouseEvent) => {
+    startDrawingInternal(e);
+  };
+
+  const draw = (e: React.MouseEvent) => {
+    if (!isDrawing) return;
+    drawInternal(e);
   };
 
   const stopDrawing = () => {
     if (isDrawing) {
-      setIsDrawing(false);
-      setUserStrokeCount((prev) => {
-        const next = prev + 1;
-        if (next === strokesCount) {
-          playCorrect();
-        }
-        return next;
-      });
+      stopDrawingInternal();
     }
   };
 
@@ -129,7 +193,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
     const interval = setInterval(() => {
       progress += 1;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.font = 'bold 130px sans-serif';
+      ctx.font = 'bold 150px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = `rgba(6, 182, 212, ${progress / 10})`;
@@ -151,7 +215,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
   return (
     <div className={`flex flex-col items-center ${className}`}>
       {/* Mode Selector & Stroke Counter Header */}
-      <div className="w-full max-w-xs flex items-center justify-between mb-3 px-1 text-xs">
+      <div className="w-full max-w-xs sm:max-w-sm flex items-center justify-between mb-3 px-1 text-xs">
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => {
@@ -197,7 +261,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
       </div>
 
       {/* Main Genkouyoushi Square Canvas */}
-      <div className="relative w-64 h-64 bg-slate-50 dark:bg-slate-950 rounded-3xl border-2 border-cyan-500/40 shadow-inner overflow-hidden select-none">
+      <div className="relative w-72 h-72 sm:w-80 sm:h-80 max-w-full aspect-square bg-slate-50 dark:bg-slate-950 rounded-3xl border-2 border-cyan-500/40 shadow-inner overflow-hidden select-none touch-none">
         {/* Japanese Genkouyoushi calligraphy grid */}
         {showGrid && (
           <div className="absolute inset-0 pointer-events-none">
@@ -215,7 +279,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
 
         {/* Ghost Stroke Guide Kanji */}
         {showGhostGuide && (
-          <div className="absolute inset-0 flex items-center justify-center font-jp text-[130px] font-black text-slate-300/30 dark:text-slate-700/40 pointer-events-none select-none transition-opacity duration-300">
+          <div className="absolute inset-0 flex items-center justify-center font-jp text-[150px] font-black text-slate-300/30 dark:text-slate-700/40 pointer-events-none select-none transition-opacity duration-300">
             {guideChar}
           </div>
         )}
@@ -223,16 +287,13 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
         {/* Interactive Drawing Canvas */}
         <canvas
           ref={canvasRef}
-          width={256}
-          height={256}
+          width={320}
+          height={320}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
           onMouseLeave={stopDrawing}
-          onTouchStart={startDrawing}
-          onTouchMove={draw}
-          onTouchEnd={stopDrawing}
-          className="absolute inset-0 cursor-crosshair touch-none"
+          className="absolute inset-0 w-full h-full cursor-crosshair touch-none"
         />
 
         {/* Success celebratory banner when user matches exact stroke count */}
@@ -245,7 +306,7 @@ export const VirtualCanvas: React.FC<VirtualCanvasProps> = ({
       </div>
 
       {/* Control Buttons Bar */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mt-3 max-w-xs">
+      <div className="flex flex-wrap items-center justify-center gap-2 mt-3 max-w-xs sm:max-w-sm">
         {/* Toggle Ghost Kanji */}
         <button
           onClick={() => setShowGhostGuide((prev) => !prev)}
