@@ -61,9 +61,16 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     } catch (err: unknown) {
       setIsLoading(false);
       const msg = err instanceof Error ? err.message : String(err);
-      if (msg.includes('Invalid credentials') || msg.includes('not found') || msg.includes('password')) {
-        setError('Email hoặc mật khẩu không chính xác.');
-      } else if (msg.includes('already exists') || msg.includes('UniqueConstraint')) {
+      if (
+        msg.includes('Invalid credentials') ||
+        msg.includes('not found') ||
+        msg.includes('password') ||
+        msg.includes('InvalidAccountId') ||
+        msg.includes('InvalidSecret') ||
+        (mode === 'signIn' && msg.includes('Server Error'))
+      ) {
+        setError('Email hoặc mật khẩu không chính xác, hoặc tài khoản chưa tồn tại. Nếu bạn chưa có tài khoản trên trang web này, vui lòng chuyển sang tab "Đăng ký".');
+      } else if (msg.includes('already exists') || msg.includes('UniqueConstraint') || msg.includes('AccountAlreadyExists')) {
         setError('Tài khoản email này đã được đăng ký. Vui lòng chuyển sang Đăng nhập.');
       } else {
         setError(`Đã có lỗi xảy ra: ${msg}`);
